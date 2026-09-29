@@ -1,0 +1,38 @@
+{
+  "name": "pawalert-server",
+  "version": "1.0.0",
+  "description": "PawAlert AI Backend API with DBSCAN Hotspot Analysis and GIS Integration",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "seed": "node src/seed/seedData.js --with-reports",
+    "clear-reports": "node src/seed/seedData.js",
+    "import-dataset": "node src/seed/importDataset.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "helmet": "^7.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.3.1",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.1",
+    "socket.io": "^4.8.3",
+    "socket.io-client": "^4.8.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  },
+  "keywords": [
+    "pawalert",
+    "ai",
+    "dbscan",
+    "gis",
+    "animal-rescue"
+  ],
+  "author": "PawAlert Team",
+  "license": "MIT"
+}

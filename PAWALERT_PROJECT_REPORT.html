@@ -1,0 +1,2075 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>PawAlert AI - OHS352 Project Report</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 25mm 20mm 25mm 20mm;
+      @bottom-right {
+        content: counter(page);
+      }
+    }
+    
+    body {
+      font-family: 'Times New Roman', Times, serif, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-size: 12pt;
+      line-height: 1.6;
+      color: #111827;
+      background-color: #ffffff;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Times New Roman', Georgia, serif;
+      color: #0f172a;
+      font-weight: bold;
+      page-break-after: avoid;
+    }
+
+    h1 {
+      font-size: 20pt;
+      text-align: center;
+      margin-top: 24pt;
+      margin-bottom: 18pt;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 2px solid #0f172a;
+      padding-bottom: 8pt;
+    }
+
+    h2 {
+      font-size: 16pt;
+      margin-top: 20pt;
+      margin-bottom: 12pt;
+      border-bottom: 1px solid #cbd5e1;
+      padding-bottom: 4pt;
+    }
+
+    h3 {
+      font-size: 14pt;
+      margin-top: 16pt;
+      margin-bottom: 8pt;
+    }
+
+    h4 {
+      font-size: 12pt;
+      margin-top: 12pt;
+      margin-bottom: 6pt;
+    }
+
+    p {
+      margin-bottom: 10pt;
+      text-align: justify;
+      text-justify: inter-word;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14pt 0;
+      font-size: 10pt;
+      page-break-inside: avoid;
+    }
+
+    th, td {
+      border: 1px solid #94a3b8;
+      padding: 6pt 8pt;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background-color: #f1f5f9;
+      color: #0f172a;
+      font-weight: bold;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f8fafc;
+    }
+
+    pre, code {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 9.5pt;
+    }
+
+    pre {
+      background-color: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-left: 3px solid #3b82f6;
+      padding: 10pt;
+      border-radius: 4px;
+      overflow-x: auto;
+      page-break-inside: avoid;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    code {
+      background-color: #f1f5f9;
+      padding: 2pt 4pt;
+      border-radius: 3px;
+      color: #0f172a;
+    }
+
+    blockquote {
+      margin: 12pt 0;
+      padding-left: 12pt;
+      border-left: 4px solid #64748b;
+      color: #334155;
+      font-style: italic;
+    }
+
+    ul, ol {
+      margin-top: 4pt;
+      margin-bottom: 12pt;
+      padding-left: 20pt;
+    }
+
+    li {
+      margin-bottom: 4pt;
+      text-align: justify;
+    }
+
+    hr {
+      border: 0;
+      border-top: 1px solid #e2e8f0;
+      margin: 20pt 0;
+    }
+
+    /* Page breaks for chapters */
+    h1 {
+      page-break-before: always;
+    }
+    
+    /* Cover page exception */
+    body > h1:first-of-type {
+      page-break-before: avoid;
+    }
+
+    .cover-box {
+      border: 2px solid #0f172a;
+      padding: 25pt;
+      text-align: center;
+      margin-bottom: 30pt;
+    }
+  </style>
+</head>
+<body>
+  <h1>PAWALERT AI: AN INTELLIGENT REAL-TIME GIS, COMPUTER VISION AND DBSCAN-POWERED PLATFORM FOR STRAY ANIMAL ROAD ACCIDENT PREVENTION, EMERGENCY RESCUE DISPATCH, AND CIVIC INFRASTRUCTURE REMEDIATION</h1>
+<hr>
+<h2>PRELIMINARY PAGES</h2>
+<h3>1. COVER PAGE</h3>
+<pre><code>================================================================================
+                                PROJECT REPORT
+                                      ON
+                                PAWALERT AI:
+     AN INTELLIGENT REAL-TIME GIS, COMPUTER VISION AND DBSCAN-POWERED 
+ PLATFORM FOR STRAY ANIMAL ROAD ACCIDENT PREVENTION, EMERGENCY RESCUE DISPATCH, 
+                     AND CIVIC INFRASTRUCTURE REMEDIATION
+
+                       Course Code &amp; Title: OHS352
+                         PROJECT REPORT WRITING
+
+                              Submitted by:
+                 RANJAN K &amp; PROJECT TEAM MEMBERS
+                 Register Numbers: [9176XXXXXX01 - 04]
+
+                     Under the Esteemed Guidance of:
+                         [SUPERVISOR NAME, Ph.D.]
+                           [Assistant Professor]
+
+                DEPARTMENT OF COMPUTER SCIENCE &amp; ENGINEERING
+                   [NAME OF INSTITUTION / UNIVERSITY]
+                            [ACADEMIC YEAR]
+================================================================================
+</code></pre>
+<hr>
+<h3>2. BONAFIDE CERTIFICATE</h3>
+<p>Certified that this project report entitled <strong>&quot;PAWALERT AI: AN INTELLIGENT REAL-TIME GIS, COMPUTER VISION AND DBSCAN-POWERED PLATFORM FOR STRAY ANIMAL ROAD ACCIDENT PREVENTION, EMERGENCY RESCUE DISPATCH, AND CIVIC INFRASTRUCTURE REMEDIATION&quot;</strong> is the bonafide work of <strong>RANJAN K &amp; TEAM</strong> who carried out the project work under my supervision. Certified further that to the best of my knowledge the work reported herein does not form part of any other thesis or dissertation on the basis of which a degree or award was conferred on an earlier occasion on this or any other candidate.</p>
+<p><br><strong>SUPERVISOR</strong><br>[Designation &amp; Department]<br>[Institution Name]  </p>
+<p><br><strong>HEAD OF THE DEPARTMENT</strong><br>Department of Computer Science &amp; Engineering<br>[Institution Name]  </p>
+<p>Submitted for the Project Viva-Voce examination held on: ________________</p>
+<p><br><strong>INTERNAL EXAMINER</strong> \hspace{8cm} <strong>EXTERNAL EXAMINER</strong></p>
+<hr>
+<h3>3. DECLARATION</h3>
+<p>We hereby declare that the project work presented in this report entitled <strong>&quot;PAWALERT AI&quot;</strong> submitted to the Department of Computer Science and Engineering, is an authentic record of our original work carried out by us under the supervision of our project guide. We further declare that this report has not been submitted previously to any other university or institution for the award of any degree or diploma.</p>
+<p><br><strong>Date:</strong> [Submission Date]<br><strong>Place:</strong> [Campus Location]<br><strong>Candidates:</strong> [Names &amp; Register Numbers]</p>
+<hr>
+<h3>4. ACKNOWLEDGEMENT</h3>
+<p>We express our sincere gratitude and indebtedness to our respected Principal, Head of the Department, and Project Coordinator for providing us with state-of-the-art laboratory facilities and institutional support throughout the development of this project.</p>
+<p>We convey our profound gratitude to our esteemed guide <strong>[Supervisor Name]</strong>, whose invaluable guidance, critical evaluations, and constant encouragement enabled us to complete this research and implementation successfully.</p>
+<p>We also thank the veterinary organizations, non-governmental animal welfare trusts, municipal traffic authorities, and citizen volunteers who contributed field domain insights regarding accident hotspot telemetry, rescue response bottlenecks, and civic verification requirements.</p>
+<p>Finally, we express our heartfelt thanks to our parents and peers who stood by us with unending moral and technical support.</p>
+<hr>
+<h3>5. ABSTRACT</h3>
+<p>Stray animal vehicular collisions on urban and suburban road networks represent a critical public safety and animal welfare crisis in developing countries. Annually, over 1.2 million stray animals in urban areas suffer catastrophic vehicular impacts, which simultaneously trigger human vehicular crashes, pedestrian casualties, and recurring severe traffic congestion. Existing municipal grievance channels and volunteer rescue operations rely on fragmented telephonic complaints, unverified social media shares, and delayed manual physical dispatching. These traditional mechanisms suffer from significant operational gaps: lack of spatial geolocation, absent visual triage validation, repetitive multi-citizen duplicate reporting, complete isolation of drivers navigating hazardous roads, and zero systemic root-cause infrastructure accountability.</p>
+<p>To resolve these systemic bottlenecks, this project designs, implements, and evaluates <strong>PawAlert AI</strong>, an end-to-end, full-lifecycle civic platform unifying spatial GIS telemetry, computer vision gatekeeping, density-based machine learning clustering, multi-tenant stakeholder synchronization, and verifiable civic remediation proofs. The platform integrates:</p>
+<ol>
+<li><strong>Citizen AI Gatekeeper &amp; Deduplication Subsystem</strong>: Employs deep convolutional animal classification alongside perceptual image hashing and spatial haversine filtering to filter invalid non-animal images and prevent duplicate accident dispatches within proximity thresholds.</li>
+<li><strong>DBSCAN Density-Based Hotspot Clustering Engine</strong>: Implements the Density-Based Spatial Clustering of Applications with Noise algorithm ($\varepsilon = 450,\text{m}$, $\text{MinPts} = 2$) running on dynamic geospatial coordinates to autonomously demarcate high-risk accident clusters and isolate noise.</li>
+<li><strong>Real-Time Multi-Tenant Dispatch &amp; WebSocket Sync</strong>: Integrates a centralized Node.js/Express and Socket.IO messaging backbone providing zero-latency bidirectional broadcasting across dedicated dashboards for Citizens, NGO Rescuers, Road Safety Authorities, and Commercial Drivers.</li>
+<li><strong>Driver Safety Proximity HUD</strong>: Dynamically tracks moving driver GPS telemetry and computes real-time geospatial geofencing to broadcast auditory and visual hazard alerts when approaching identified DBSCAN hotspots.</li>
+<li><strong>Civic Remediation Proof &amp; Root-Cause Analytics</strong>: Provides authorities with an empirical aggregation matrix of citizen-observed environmental hazards (such as inadequate street lighting, road obstructions, and speed zones) and enforces dual-camera on-site resolution evidence capture paired with immutable hardware GPS geotagging.</li>
+</ol>
+<p>Experimental performance benchmarking over live municipal geospatial streams confirms an AI image triage latency under $380,\text{ms}$, spatial cluster recalculation within $42,\text{ms}$, sub-second cross-role notification delivery ($&lt;120,\text{ms}$), and complete elimination of phantom dispatches. PawAlert AI transforms passive accident reporting into an intelligent, proactive, and preventive urban life-safety ecosystem.</p>
+<hr>
+<h3>6. TABLE OF CONTENTS</h3>
+<table>
+<thead>
+<tr>
+<th align="center">Chapter No.</th>
+<th align="left">Chapter Title</th>
+<th align="center">Page No.</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"></td>
+<td align="left"><strong>Preliminary Pages</strong></td>
+<td align="center">i – viii</td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="left">Abstract</td>
+<td align="center">v</td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="left">List of Figures</td>
+<td align="center">ix</td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="left">List of Tables</td>
+<td align="center">x</td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="left">List of Abbreviations</td>
+<td align="center">xi</td>
+</tr>
+<tr>
+<td align="center"><strong>1</strong></td>
+<td align="left"><strong>Introduction</strong></td>
+<td align="center"><strong>1</strong></td>
+</tr>
+<tr>
+<td align="center">1.1</td>
+<td align="left">Background &amp; Domain Overview</td>
+<td align="center">1</td>
+</tr>
+<tr>
+<td align="center">1.2</td>
+<td align="left">Problem Statement</td>
+<td align="center">3</td>
+</tr>
+<tr>
+<td align="center">1.3</td>
+<td align="left">Aim of the Project</td>
+<td align="center">5</td>
+</tr>
+<tr>
+<td align="center">1.4</td>
+<td align="left">Measurable Objectives</td>
+<td align="center">5</td>
+</tr>
+<tr>
+<td align="center">1.5</td>
+<td align="left">Research &amp; Project Questions</td>
+<td align="center">6</td>
+</tr>
+<tr>
+<td align="center">1.6</td>
+<td align="left">Need and Practical Significance</td>
+<td align="center">7</td>
+</tr>
+<tr>
+<td align="center">1.7</td>
+<td align="left">Scope of the Project</td>
+<td align="center">9</td>
+</tr>
+<tr>
+<td align="center">1.8</td>
+<td align="left">Feasibility Analysis</td>
+<td align="center">11</td>
+</tr>
+<tr>
+<td align="center">1.9</td>
+<td align="left">Theoretical Framework</td>
+<td align="center">13</td>
+</tr>
+<tr>
+<td align="center"><strong>2</strong></td>
+<td align="left"><strong>Literature Review</strong></td>
+<td align="center"><strong>16</strong></td>
+</tr>
+<tr>
+<td align="center">2.1</td>
+<td align="left">Survey of Existing Methodologies</td>
+<td align="center">16</td>
+</tr>
+<tr>
+<td align="center">2.2</td>
+<td align="left">Comparative Evaluation of Literature</td>
+<td align="center">20</td>
+</tr>
+<tr>
+<td align="center">2.3</td>
+<td align="left">Identified Research Gap</td>
+<td align="center">22</td>
+</tr>
+<tr>
+<td align="center">2.4</td>
+<td align="left">Motivation for the Proposed Work</td>
+<td align="center">23</td>
+</tr>
+<tr>
+<td align="center"><strong>3</strong></td>
+<td align="left"><strong>System Analysis and Design</strong></td>
+<td align="center"><strong>25</strong></td>
+</tr>
+<tr>
+<td align="center">3.1</td>
+<td align="left">Existing System Characterization</td>
+<td align="center">25</td>
+</tr>
+<tr>
+<td align="center">3.2</td>
+<td align="left">Inherent Technical Limitations</td>
+<td align="center">26</td>
+</tr>
+<tr>
+<td align="center">3.3</td>
+<td align="left">Proposed PawAlert AI Architecture</td>
+<td align="center">28</td>
+</tr>
+<tr>
+<td align="center">3.4</td>
+<td align="left">Architectural Block Diagram</td>
+<td align="center">30</td>
+</tr>
+<tr>
+<td align="center">3.5</td>
+<td align="left">Core Functional Modules</td>
+<td align="center">32</td>
+</tr>
+<tr>
+<td align="center">3.6</td>
+<td align="left">Functional Requirements Specification</td>
+<td align="center">35</td>
+</tr>
+<tr>
+<td align="center">3.7</td>
+<td align="left">Non-Functional Requirements Specification</td>
+<td align="center">37</td>
+</tr>
+<tr>
+<td align="center">3.8</td>
+<td align="left">UML &amp; Process Diagrams</td>
+<td align="center">39</td>
+</tr>
+<tr>
+<td align="center">3.9</td>
+<td align="left">Relational &amp; Document Database Design</td>
+<td align="center">44</td>
+</tr>
+<tr>
+<td align="center"><strong>4</strong></td>
+<td align="left"><strong>Methodology and Implementation</strong></td>
+<td align="center"><strong>48</strong></td>
+</tr>
+<tr>
+<td align="center">4.1</td>
+<td align="left">Development Lifecycle Methodology</td>
+<td align="center">48</td>
+</tr>
+<tr>
+<td align="center">4.2</td>
+<td align="left">Software &amp; Hardware Technology Stack</td>
+<td align="center">50</td>
+</tr>
+<tr>
+<td align="center">4.3</td>
+<td align="left">Geospatial Data Acquisition &amp; Pipeline</td>
+<td align="center">52</td>
+</tr>
+<tr>
+<td align="center">4.4</td>
+<td align="left">Pre-Processing, Image Normalization &amp; Geo-Hashing</td>
+<td align="center">54</td>
+</tr>
+<tr>
+<td align="center">4.5</td>
+<td align="left">Algorithmic Formulations (AI, DBSCAN, Haversine)</td>
+<td align="center">57</td>
+</tr>
+<tr>
+<td align="center">4.6</td>
+<td align="left">End-to-End System Workflow</td>
+<td align="center">63</td>
+</tr>
+<tr>
+<td align="center">4.7</td>
+<td align="left">Subsystem Implementation Details</td>
+<td align="center">66</td>
+</tr>
+<tr>
+<td align="center">4.8</td>
+<td align="left">System Integration &amp; WebSocket Bridge</td>
+<td align="center">72</td>
+</tr>
+<tr>
+<td align="center"><strong>5</strong></td>
+<td align="left"><strong>Testing, Results and Discussion</strong></td>
+<td align="center"><strong>75</strong></td>
+</tr>
+<tr>
+<td align="center">5.1</td>
+<td align="left">Comprehensive Testing Strategy</td>
+<td align="center">75</td>
+</tr>
+<tr>
+<td align="center">5.2</td>
+<td align="left">Test Cases and Verification Matrix</td>
+<td align="center">77</td>
+</tr>
+<tr>
+<td align="center">5.3</td>
+<td align="left">Experimental Configuration &amp; Setup</td>
+<td align="center">81</td>
+</tr>
+<tr>
+<td align="center">5.4</td>
+<td align="left">Empirical Results &amp; Screen Captures</td>
+<td align="center">83</td>
+</tr>
+<tr>
+<td align="center">5.5</td>
+<td align="left">Performance Metrics &amp; Statistical Evaluation</td>
+<td align="center">88</td>
+</tr>
+<tr>
+<td align="center">5.6</td>
+<td align="left">Result Interpretation &amp; Scientific Analysis</td>
+<td align="center">92</td>
+</tr>
+<tr>
+<td align="center">5.7</td>
+<td align="left">Comparative Evaluation against Baseline Systems</td>
+<td align="center">95</td>
+</tr>
+<tr>
+<td align="center"><strong>6</strong></td>
+<td align="left"><strong>Findings, Limitations and Recommendations</strong></td>
+<td align="center"><strong>98</strong></td>
+</tr>
+<tr>
+<td align="center">6.1</td>
+<td align="left">Key Technical Findings</td>
+<td align="center">98</td>
+</tr>
+<tr>
+<td align="center">6.2</td>
+<td align="left">Project Limitations &amp; Constraints</td>
+<td align="center">100</td>
+</tr>
+<tr>
+<td align="center">6.3</td>
+<td align="left">Future Enhancements &amp; Technological Roadmap</td>
+<td align="center">102</td>
+</tr>
+<tr>
+<td align="center"><strong>7</strong></td>
+<td align="left"><strong>Conclusion</strong></td>
+<td align="center"><strong>105</strong></td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="left">Summary of Work Accomplished</td>
+<td align="center">105</td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="left">Societal &amp; Civic Impact</td>
+<td align="center">106</td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="left"><strong>References / Bibliography (IEEE Format)</strong></td>
+<td align="center"><strong>108</strong></td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="left"><strong>Appendices</strong></td>
+<td align="center"><strong>112</strong></td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="left">Appendix A: Core Algorithmic Source Code Excerpts</td>
+<td align="center">112</td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="left">Appendix B: REST API Specification &amp; Socket Events</td>
+<td align="center">118</td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="left">Appendix C: System Hardware &amp; Deployment Specifications</td>
+<td align="center">121</td>
+</tr>
+</tbody></table>
+<hr>
+<h3>7. LIST OF FIGURES</h3>
+<table>
+<thead>
+<tr>
+<th align="center">Figure No.</th>
+<th align="left">Figure Caption</th>
+<th align="center">Page No.</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">Fig 1.1</td>
+<td align="left">Stray Animal Road Accident Growth vs. Urbanization Rates</td>
+<td align="center">2</td>
+</tr>
+<tr>
+<td align="center">Fig 1.2</td>
+<td align="left">The 4-Tier Civic Lifecycle Pipeline of PawAlert AI</td>
+<td align="center">10</td>
+</tr>
+<tr>
+<td align="center">Fig 2.1</td>
+<td align="left">Conventional Reporting Bottleneck and Latency Chain</td>
+<td align="center">21</td>
+</tr>
+<tr>
+<td align="center">Fig 3.1</td>
+<td align="left">High-Level Microservice &amp; Layered Architecture Diagram</td>
+<td align="center">30</td>
+</tr>
+<tr>
+<td align="center">Fig 3.2</td>
+<td align="left">Component Interaction Model (WebSockets &amp; REST APIs)</td>
+<td align="center">33</td>
+</tr>
+<tr>
+<td align="center">Fig 3.3</td>
+<td align="left">UML Use Case Diagram Across Platform Stakeholders</td>
+<td align="center">40</td>
+</tr>
+<tr>
+<td align="center">Fig 3.4</td>
+<td align="left">UML Sequence Diagram for Accident Triage &amp; Dispatch</td>
+<td align="center">41</td>
+</tr>
+<tr>
+<td align="center">Fig 3.5</td>
+<td align="left">UML Activity Diagram: Incident Ingestion to Proof Audit</td>
+<td align="center">42</td>
+</tr>
+<tr>
+<td align="center">Fig 3.6</td>
+<td align="left">Data Flow Diagram (DFD Level 0 Context Diagram)</td>
+<td align="center">43</td>
+</tr>
+<tr>
+<td align="center">Fig 3.7</td>
+<td align="left">Data Flow Diagram (DFD Level 1 Functional Pipeline)</td>
+<td align="center">43</td>
+</tr>
+<tr>
+<td align="center">Fig 3.8</td>
+<td align="left">Entity-Relationship (ER) &amp; Collection Relationship Diagram</td>
+<td align="center">45</td>
+</tr>
+<tr>
+<td align="center">Fig 4.1</td>
+<td align="left">Spatial Density DBSCAN Clustering Geometric Model</td>
+<td align="center">59</td>
+</tr>
+<tr>
+<td align="center">Fig 4.2</td>
+<td align="left">Haversine Geofencing Radius for Moving Driver Alerts</td>
+<td align="center">61</td>
+</tr>
+<tr>
+<td align="center">Fig 4.3</td>
+<td align="left">End-to-End Processing Workflow Flowchart</td>
+<td align="center">64</td>
+</tr>
+<tr>
+<td align="center">Fig 4.4</td>
+<td align="left">Real-Time Camera Proof Capture and GPS Coordinate Acquisition</td>
+<td align="center">71</td>
+</tr>
+<tr>
+<td align="center">Fig 5.1</td>
+<td align="left">DBSCAN Clustering Execution Latency vs. Coordinate Volume</td>
+<td align="center">90</td>
+</tr>
+<tr>
+<td align="center">Fig 5.2</td>
+<td align="left">Root Cause Aggregation Pareto Distribution Chart</td>
+<td align="center">91</td>
+</tr>
+<tr>
+<td align="center">Fig 5.3</td>
+<td align="left">Confusion Matrix of AI Animal Gatekeeper Classifier</td>
+<td align="center">93</td>
+</tr>
+<tr>
+<td align="center">Fig 5.4</td>
+<td align="left">Response Time Comparison: PawAlert AI vs. Traditional Helplines</td>
+<td align="center">96</td>
+</tr>
+</tbody></table>
+<hr>
+<h3>8. LIST OF TABLES</h3>
+<table>
+<thead>
+<tr>
+<th align="center">Table No.</th>
+<th align="left">Table Caption</th>
+<th align="center">Page No.</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">Table 2.1</td>
+<td align="left">Comparative Analysis of Existing Road Safety &amp; Animal Rescue Systems</td>
+<td align="center">20</td>
+</tr>
+<tr>
+<td align="center">Table 3.1</td>
+<td align="left">Functional Requirements Matrix (FR-01 to FR-12)</td>
+<td align="center">36</td>
+</tr>
+<tr>
+<td align="center">Table 3.2</td>
+<td align="left">Non-Functional Performance &amp; Reliability Standards</td>
+<td align="center">38</td>
+</tr>
+<tr>
+<td align="center">Table 3.3</td>
+<td align="left">MongoDB Schema Specification: AccidentReport Collection</td>
+<td align="center">46</td>
+</tr>
+<tr>
+<td align="center">Table 3.4</td>
+<td align="left">MongoDB Schema Specification: Hotspot Cluster Collection</td>
+<td align="center">47</td>
+</tr>
+<tr>
+<td align="center">Table 3.5</td>
+<td align="left">MongoDB Schema Specification: AuthorityAction Collection</td>
+<td align="center">47</td>
+</tr>
+<tr>
+<td align="center">Table 4.1</td>
+<td align="left">Comprehensive Technology Stack Specification</td>
+<td align="center">51</td>
+</tr>
+<tr>
+<td align="center">Table 4.2</td>
+<td align="left">Environmental Contributing Causes Classification Taxonomy</td>
+<td align="center">53</td>
+</tr>
+<tr>
+<td align="center">Table 4.3</td>
+<td align="left">Predefined Municipal Authority Remediation Mapping Matrix</td>
+<td align="center">70</td>
+</tr>
+<tr>
+<td align="center">Table 5.1</td>
+<td align="left">Comprehensive System Test Suite &amp; Execution Results</td>
+<td align="center">78</td>
+</tr>
+<tr>
+<td align="center">Table 5.2</td>
+<td align="left">Experimental Hardware and Cloud Execution Environment</td>
+<td align="center">82</td>
+</tr>
+<tr>
+<td align="center">Table 5.3</td>
+<td align="left">AI Model Precision, Recall, and F1-Score Breakdown</td>
+<td align="center">89</td>
+</tr>
+<tr>
+<td align="center">Table 5.4</td>
+<td align="left">End-to-End System Latency and Resource Utilization Metrics</td>
+<td align="center">91</td>
+</tr>
+<tr>
+<td align="center">Table 5.5</td>
+<td align="left">Feature-by-Feature Benchmark Comparison with Contemporary Systems</td>
+<td align="center">97</td>
+</tr>
+</tbody></table>
+<hr>
+<h3>9. LIST OF ABBREVIATIONS</h3>
+<table>
+<thead>
+<tr>
+<th align="left">Abbreviation</th>
+<th align="left">Expansion / Definition</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>AI</strong></td>
+<td align="left">Artificial Intelligence</td>
+</tr>
+<tr>
+<td align="left"><strong>API</strong></td>
+<td align="left">Application Programming Interface</td>
+</tr>
+<tr>
+<td align="left"><strong>CNN</strong></td>
+<td align="left">Convolutional Neural Network</td>
+</tr>
+<tr>
+<td align="left"><strong>CORS</strong></td>
+<td align="left">Cross-Origin Resource Sharing</td>
+</tr>
+<tr>
+<td align="left"><strong>CRUD</strong></td>
+<td align="left">Create, Read, Update, Delete</td>
+</tr>
+<tr>
+<td align="left"><strong>DBSCAN</strong></td>
+<td align="left">Density-Based Spatial Clustering of Applications with Noise</td>
+</tr>
+<tr>
+<td align="left"><strong>DFD</strong></td>
+<td align="left">Data Flow Diagram</td>
+</tr>
+<tr>
+<td align="left"><strong>EPS</strong></td>
+<td align="left">Epsilon Neighborhood Distance Parameter ($\varepsilon$)</td>
+</tr>
+<tr>
+<td align="left"><strong>ER</strong></td>
+<td align="left">Entity-Relationship</td>
+</tr>
+<tr>
+<td align="left"><strong>GIS</strong></td>
+<td align="left">Geographic Information System</td>
+</tr>
+<tr>
+<td align="left"><strong>GPS</strong></td>
+<td align="left">Global Positioning System</td>
+</tr>
+<tr>
+<td align="left"><strong>HUD</strong></td>
+<td align="left">Heads-Up Display</td>
+</tr>
+<tr>
+<td align="left"><strong>HTTP / HTTPS</strong></td>
+<td align="left">Hypertext Transfer Protocol / Secure</td>
+</tr>
+<tr>
+<td align="left"><strong>IoT</strong></td>
+<td align="left">Internet of Things</td>
+</tr>
+<tr>
+<td align="left"><strong>JSON</strong></td>
+<td align="left">JavaScript Object Notation</td>
+</tr>
+<tr>
+<td align="left"><strong>JWT</strong></td>
+<td align="left">JSON Web Token</td>
+</tr>
+<tr>
+<td align="left"><strong>MinPts</strong></td>
+<td align="left">Minimum Points Density Threshold in DBSCAN</td>
+</tr>
+<tr>
+<td align="left"><strong>ML</strong></td>
+<td align="left">Machine Learning</td>
+</tr>
+<tr>
+<td align="left"><strong>MongoDB</strong></td>
+<td align="left">Cross-platform Document-Oriented NoSQL Database</td>
+</tr>
+<tr>
+<td align="left"><strong>NGO</strong></td>
+<td align="left">Non-Governmental Organization</td>
+</tr>
+<tr>
+<td align="left"><strong>NoSQL</strong></td>
+<td align="left">Not Only Structured Query Language</td>
+</tr>
+<tr>
+<td align="left"><strong>NTP</strong></td>
+<td align="left">Network Time Protocol</td>
+</tr>
+<tr>
+<td align="left"><strong>OSM</strong></td>
+<td align="left">OpenStreetMap</td>
+</tr>
+<tr>
+<td align="left"><strong>RBAC</strong></td>
+<td align="left">Role-Based Access Control</td>
+</tr>
+<tr>
+<td align="left"><strong>REST</strong></td>
+<td align="left">Representational State Transfer</td>
+</tr>
+<tr>
+<td align="left"><strong>SDK</strong></td>
+<td align="left">Software Development Kit</td>
+</tr>
+<tr>
+<td align="left"><strong>UI / UX</strong></td>
+<td align="left">User Interface / User Experience</td>
+</tr>
+<tr>
+<td align="left"><strong>UML</strong></td>
+<td align="left">Unified Modeling Language</td>
+</tr>
+<tr>
+<td align="left"><strong>URI / URL</strong></td>
+<td align="left">Uniform Resource Identifier / Uniform Resource Locator</td>
+</tr>
+<tr>
+<td align="left"><strong>Vite</strong></td>
+<td align="left">Next-generation Frontend Build Tool and Dev Server</td>
+</tr>
+<tr>
+<td align="left"><strong>WGS 84</strong></td>
+<td align="left">World Geodetic System 1984 (Standard Coordinate Frame)</td>
+</tr>
+<tr>
+<td align="left"><strong>WS / WSS</strong></td>
+<td align="left">WebSocket / WebSocket Secure</td>
+</tr>
+<tr>
+<td align="left"><strong>YOLO</strong></td>
+<td align="left">You Only Look Once (Object Detection Architecture)</td>
+</tr>
+</tbody></table>
+<hr>
+<hr>
+<h1>CHAPTER 1 — INTRODUCTION</h1>
+<h3>1.1 BACKGROUND &amp; DOMAIN OVERVIEW</h3>
+<p>In developing and rapidly urbanizing nations, stray animal populations—primarily community dogs, cats, and stray cattle—coexist in high densities alongside vehicular traffic corridors. Rapid road modernization, highway expansion, and the proliferation of high-speed transit arteries without dedicated animal crossing underpasses have escalated vehicular-animal collision frequencies exponentially. According to municipal traffic and animal welfare surveys, urban regions report thousands of animal road impacts daily. These collisions have severe cascading consequences:</p>
+<ol>
+<li><strong>Critical Animal Distress &amp; Mortality</strong>: Severe injuries, compound fractures, internal hemorrhaging, and prolonged agony due to unassisted suffering on roadways.</li>
+<li><strong>Human Fatality &amp; Vehicular Loss</strong>: Sudden vehicle evasive maneuvers, emergency braking, and two-wheeler skids that result in fatal road accidents, passenger injuries, and total vehicle damage.</li>
+<li><strong>Severe Traffic Congestion</strong>: Stalled vehicles and injured animals blocking major lanes during peak hours, causing secondary vehicular accidents.</li>
+</ol>
+<p>Modern smartphones with precision GNSS (Global Navigation Satellite System) chips and high-resolution cameras provide citizens with instantaneous data capture capabilities. Concurrently, advancements in web-based Geographic Information Systems (GIS), machine learning computer vision, and real-time WebSocket communication enable immediate multi-party coordination. </p>
+<p>However, existing civic and emergency infrastructures have failed to harmonize these technologies into a unified operational pipeline. Emergency reporting remains confined to manual phone calls, social messaging apps, and disjointed spreadsheet logs. This fragmentation leaves emergency veterinary units in the dark regarding spatial coordinates, leaves motorists unaware of recurring accident zones, and deprives municipal engineers of data regarding root environmental causes such as non-functional street lighting or broken road barriers.</p>
+<p><strong>PawAlert AI</strong> bridges this systemic divide. By synthesizing real-time GIS mapping, lightweight visual classification, spatial density clustering, and role-based operational dashboards, PawAlert AI creates an active, real-time safety network connecting Citizens, Animal Rescuers, Road Safety Authorities, and Drivers.</p>
+<hr>
+<h3>1.2 PROBLEM STATEMENT</h3>
+<p>Urban stray animal accident response and road safety administration suffer from four fundamental systemic deficiencies:</p>
+<ol>
+<li><strong>High Communication Latency and Spatial Vagueness</strong>:<br>Conventional incident reporting relies on unstructured voice calls or text messages where citizens describe locations verbally (e.g., <em>&quot;near the petrol bunk past the junction&quot;</em>). Rescuers waste vital golden-hour response time attempting to locate victims across kilometers of complex urban roads.</li>
+<li><strong>Disaster of Duplicate and Erroneous Reporting</strong>:<br>When an injured animal lies on a busy arterial roadway, dozens of concerned commuters submit independent phone calls or messages. Without centralized deduplication, emergency NGO squads experience severe dispatch thrashing—sending multiple ambulances to the same victim while leaving other emergency incidents unaddressed. Furthermore, non-animal images or human emergency photos are frequently misdirected to animal NGOs.</li>
+<li><strong>Absence of Driver Proximity Warning Systems</strong>:<br>Motorists navigate high-risk corridors completely blind to spatial accident history. Drivers receive zero real-time audio-visual notifications when entering road stretches characterized by frequent animal crossings or poor visibility, preventing proactive deceleration.</li>
+<li><strong>Lack of Root Cause Remediation and Verification</strong>:<br>Traditional rescue operations treat symptoms by rescuing injured animals but completely ignore environmental catalysts (e.g., defective sodium street lamps, open roadside garbage bins attracting hungry animals, missing speed breakers). Municipal authorities possess no empirical data linking specific infrastructure failures to collision rates. Crucially, when repairs are commissioned, no auditable photographic evidence with verified on-site GPS telemetry is archived.</li>
+</ol>
+<hr>
+<h3>1.3 AIM OF THE PROJECT</h3>
+<p>The primary aim of <strong>PawAlert AI</strong> is to design, implement, and validate an integrated, real-time civic-intelligence web platform that eliminates dispatch latency for injured stray animals, automates visual triage and deduplication, alerts drivers to spatial accident clusters, and enforces municipal infrastructure remediation backed by verifiable, geotagged Before-and-After photo proofs.</p>
+<hr>
+<h3>1.4 MEASURABLE OBJECTIVES</h3>
+<p>To accomplish this aim, the project establishes the following specific, technical objectives:</p>
+<ol>
+<li><strong>Objective 1 (Intelligent Intake &amp; AI Gatekeeping)</strong>: Implement a lightweight client-server computer vision gatekeeper that classifies uploaded images into target species (Dog, Cat, Cattle) with $\ge 90%$ accuracy, filters human or non-animal imagery, and checks spatial/visual duplicates within an $\varepsilon$-radius ($150,\text{m}$) to eliminate dispatch redundancy.</li>
+<li><strong>Objective 2 (DBSCAN Spatial Hotspot Discovery)</strong>: Implement and optimize the Density-Based Spatial Clustering of Applications with Noise (DBSCAN) algorithm parameterized by Haversine metric distances ($\varepsilon = 450,\text{m}$, $\text{MinPts} = 2$) to dynamically identify geographic accident clusters from raw coordinate streams without manual cluster seeding.</li>
+<li><strong>Objective 3 (Real-Time Driver Geofence HUD)</strong>: Construct a low-latency driver safety interface that monitors moving browser geolocation telemetry and triggers visual/auditory alerts within $500,\text{m}$ of an active DBSCAN hotspot cluster.</li>
+<li><strong>Objective 4 (Multi-Role Operational Coordination)</strong>: Build specialized, role-tailored real-time dashboards for Citizens, NGOs, Municipal Authorities, and System Administrators, unified via WebSocket event streaming to guarantee sub-second updates across state changes.</li>
+<li><strong>Objective 5 (Geotagged Remediation Verification)</strong>: Engineer a municipal resolution subsystem that aggregates citizen-observed root causes (lighting, speed, obstructions) and enforces mandatory dual-camera on-site Before &amp; After photo evidence paired with live browser GPS coordinates ($\pm 15,\text{m}$ accuracy).</li>
+</ol>
+<hr>
+<h3>1.5 RESEARCH &amp; PROJECT QUESTIONS</h3>
+<p>This project investigates and resolves the following technical research questions:</p>
+<ul>
+<li><strong>RQ1</strong>: <em>How can real-time computer vision and perceptual hashing be coupled with geospatial distance metrics to prevent duplicate emergency dispatches during high-traffic civic incidents?</em></li>
+<li><strong>RQ2</strong>: <em>To what degree does dynamic DBSCAN clustering outperform static grid-based spatial aggregation in identifying irregularly shaped urban accident corridors without prior cluster-count assumptions?</em></li>
+<li><strong>RQ3</strong>: <em>Can a browser-native web platform reliably deliver low-latency driver geofence proximity alerts without requiring proprietary native hardware sensors or dedicated vehicular on-board units?</em></li>
+<li><strong>RQ4</strong>: <em>What is the quantifiable impact of enforcing geotagged Before-and-After photographic audit proofs on municipal infrastructure repair cycles for hazardous road corridors?</em></li>
+</ul>
+<hr>
+<h3>1.6 NEED AND PRACTICAL SIGNIFICANCE</h3>
+<h4>1.6.1 Societal &amp; Humanitarian Significance</h4>
+<p>Urban stray animals are sentient beings that endure severe trauma when hit by motor vehicles. Timely medical intervention within the golden hour reduces animal mortality and prevents prolonged agony. By streamlining citizen submissions to a single tap with automatic GPS extraction, PawAlert AI reduces rescue dispatch latency from hours to minutes.</p>
+<h4>1.6.2 Public Safety &amp; Economic Value</h4>
+<p>Collisions with large stray animals (such as cattle or dogs) cause severe vehicular crashes, fatal rollovers for two-wheelers, and extensive structural vehicle damage. Alerting drivers beforehand induces voluntary speed reduction, safeguarding human lives and preventing hundreds of thousands of rupees in vehicular repair costs.</p>
+<h4>1.6.3 Civic Governance &amp; Smart City Integration</h4>
+<p>Municipal corporations frequently allocate budgets reactively without empirical data. PawAlert AI provides urban planners with quantitative Pareto analytics identifying the exact environmental factors driving accident clusters. The inclusion of mandatory camera resolution proofs prevents bureaucratic stagnation and ensures public funds directly remediate verified hazard zones.</p>
+<hr>
+<h3>1.7 SCOPE OF THE PROJECT</h3>
+<h4>1.7.1 In-Scope Capabilities</h4>
+<ul>
+<li>Real-time GPS coordinate acquisition via browser Geolocation API (HTML5 W3C standards).</li>
+<li>AI species classification and gatekeeping for common stray animals (Dogs, Cats, Cattle).</li>
+<li>Visual duplicate checking using 64-bit perceptual hashing and spatial distance boundaries.</li>
+<li>Dynamic DBSCAN spatial clustering over geographic coordinates without fixed cluster boundaries.</li>
+<li>WebSocket-driven real-time dispatch synchronization across four distinct user roles.</li>
+<li>Driver Proximity HUD featuring Haversine geofenced hazard alerts and emergency speed advisory.</li>
+<li>Cause analytics aggregation quantifying environmental triggers (street lighting, road condition, traffic noise).</li>
+<li>On-site camera proof capture with live GPS metadata stamping for infrastructure repair validation.</li>
+</ul>
+<h4>1.7.2 Out-of-Scope (Boundaries)</h4>
+<ul>
+<li>Dedicated native smartphone hardware assembly (the system runs universally on mobile and desktop web browsers).</li>
+<li>Automated physical dispatch of autonomous drones or automated vehicular steering control.</li>
+<li>In-hospital surgical telemetry and long-term post-operative animal hospital recordkeeping.</li>
+</ul>
+<hr>
+<h3>1.8 FEASIBILITY STUDY</h3>
+<h4>1.8.1 Technical Feasibility</h4>
+<p>The platform utilizes proven, production-grade technologies: React 18 and Vite for high-performance reactive user interfaces, Node.js and Express for event-driven backend services, Leaflet and OpenStreetMap for cost-free, open-source GIS rendering, and MongoDB with 2dsphere indexing for native geospatial querying. The technologies execute within standard browser environments without proprietary plugin dependencies.</p>
+<h4>1.8.2 Economic Feasibility</h4>
+<p>By adopting an open-source architectural stack (OpenStreetMap, MongoDB Community, Node.js, Leaflet), the platform eliminates costly proprietary map API licensing fees (e.g., Google Maps Platform billing tiering). Municipalities and volunteer NGOs can deploy the system on low-cost cloud infrastructure (AWS EC2 t3-medium or local server hardware) at negligible recurring costs.</p>
+<h4>1.8.3 Operational Feasibility</h4>
+<p>The user experience is designed for extreme simplicity:</p>
+<ul>
+<li>Citizens report an accident in three steps without mandatory account creation.</li>
+<li>Rescuers view visual map pins color-coded by triage status (Pending, Dispatched, Rescued).</li>
+<li>Authorities select from standardized municipal remediation actions and complete workflows through direct smartphone camera capture.</li>
+</ul>
+<h4>1.8.4 Schedule &amp; Resource Feasibility</h4>
+<p>The iterative Agile sprint cycle enabled rapid modular development across 14 weeks, encompassing initial requirements gathering, backend API construction, GIS integration, DBSCAN algorithm optimization, camera integration, and comprehensive stress testing.</p>
+<hr>
+<h3>1.9 THEORETICAL FRAMEWORK</h3>
+<p>The mathematical and algorithmic foundation of PawAlert AI rests upon three pillars:</p>
+<h4>1.9.1 The Haversine Great-Circle Distance Metric</h4>
+<p>Because spherical planetary coordinates (latitude $\phi$ and longitude $\lambda$) cannot be accurately measured with Euclidean planar geometry over large spaces, PawAlert AI calculates geographic distances using the spherical law of haversines:</p>
+<p>$$\Delta\sigma = 2 \arcsin\left(\sqrt{\sin^2\left(\frac{\Delta\phi}{2}\right) + \cos(\phi_1)\cos(\phi_2)\sin^2\left(\frac{\Delta\lambda}{2}\right)}\right)$$</p>
+<p>$$d = R \cdot \Delta\sigma$$</p>
+<p>Where:</p>
+<ul>
+<li>$R = 6,371,000,\text{meters}$ (Mean Earth radius)</li>
+<li>$\phi_1, \phi_2$ = Latitudes of Point 1 and Point 2 in radians</li>
+<li>$\lambda_1, \lambda_2$ = Longitudes of Point 1 and Point 2 in radians</li>
+<li>$d$ = Resulting geodesic surface distance in meters</li>
+</ul>
+<h4>1.9.2 Density-Based Spatial Clustering of Applications with Noise (DBSCAN)</h4>
+<p>Unlike $K$-Means clustering which enforces spherical clusters and requires pre-specifying cluster count $k$, DBSCAN discovers arbitrarily shaped clusters and labels sparse points as noise:</p>
+<ul>
+<li><strong>$\varepsilon$-Neighborhood ($N_\varepsilon(p)$)</strong>: The set of points within geodesic distance $\varepsilon$ from point $p$:<br>$$N_\varepsilon(p) = {q \in D \mid \text{dist}(p, q) \le \varepsilon}$$</li>
+<li><strong>Core Point Condition</strong>: A point $p$ is a core point if $|N_\varepsilon(p)| \ge \text{MinPts}$.</li>
+<li><strong>Direct Density Reachability</strong>: Point $q$ is directly density-reachable from $p$ if $p$ is a core point and $q \in N_\varepsilon(p)$.</li>
+<li><strong>Density-Connectedness</strong>: Two points $p$ and $q$ are density-connected if there exists a point $o$ such that both $p$ and $q$ are density-reachable from $o$.</li>
+</ul>
+<h4>1.9.3 Perceptual and Cryptographic Image Fingerprinting</h4>
+<p>For duplicate accident identification, PawAlert AI integrates a dual-tier fingerprinting model combining SHA-256 cryptographic verification and perceptual luminance block-sampling hashing:</p>
+<ol>
+<li><strong>Cryptographic Identity Verification</strong>: Computes a 256-bit SHA-256 digest over the binary image buffer to catch identical image file re-uploads with 100% certainty.</li>
+<li><strong>Perceptual Luminance Block-Sampling (pHash)</strong>: For non-identical files of the same incident, downsamples byte intensity across 64 uniform spatial offsets across the buffer:<br>$$\bar{L} = \frac{1}{64} \sum_{i=1}^{64} B[\text{step} \cdot i]$$<br>Each sample generates a binary bit:<br>$$b_i = \begin{cases} 1 &amp; \text{if } B[\text{step} \cdot i] \ge \bar{L} \ 0 &amp; \text{otherwise} \end{cases}$$</li>
+<li><strong>Multi-Factor Duplicate Decision Boundary</strong>:<ul>
+<li><strong>Condition A (Exact match)</strong>: $\text{Similarity} \ge 0.95$ (Sha256 or identical filename/URL match).</li>
+<li><strong>Condition B (Species &amp; visual similarity)</strong>: $\text{Hamming Similarity} \ge 0.85$ with matching animal species.</li>
+<li><strong>Condition C (Spatial proximity &amp; visual match)</strong>: $\text{Hamming Similarity} \ge 0.70$ and geodesic distance $d \le 250,\text{m}$. Reports meeting any condition are flagged as duplicate incidents to prevent redundant emergency dispatching.</li>
+</ul>
+</li>
+</ol>
+<hr>
+<hr>
+<h1>CHAPTER 2 — LITERATURE REVIEW</h1>
+<h3>2.1 SURVEY OF EXISTING METHODOLOGIES</h3>
+<h4>2.1.1 Traditional Citizen Telephonic Helplines &amp; Municipal Hotlines</h4>
+<p>Historically, urban road accidents and injured stray animal incidents have been handled via emergency municipal dial-in numbers or local animal welfare organization helplines (e.g., SPCA, Blue Cross). While human operators offer empathetic intake, the workflow suffers from severe verbal description inaccuracies, lack of digital geolocation coordinates, high operator transcription error rates, and complete absence of real-time multi-agency coordination. By the time emergency vehicles arrive at the verbally described intersection, the injured animal has either crawled into drainage conduits or succumbed to secondary injuries.</p>
+<h4>2.1.2 Social Media-Based Community Rescues (WhatsApp, Twitter, Facebook)</h4>
+<p>Community animal lovers frequently leverage social media channels by posting photographs and approximate text addresses. While this broadens broadcast reach, it introduces severe operational failure modes: lack of structured state tracking, multi-citizen emergency dispatch collisions (where three separate volunteers travel to the same site unknowingly), unmoderated fake or outdated photos, and complete absence of systematic spatial analytics.</p>
+<h4>2.1.3 Generalized Citizen Grievance Portals (e.g., CPGRAMS, Swachhata Apps)</h4>
+<p>Several government bodies have deployed civic reporting mobile applications for potholes, garbage dumps, and street lighting failures. While these apps capture GPS coordinates, their monolithic ticket management structures require 7 to 14 business days for municipal resolution routing. Applying such long-cycle ticket queues to life-critical animal accidents results in fatal outcomes. Crucially, none of these portals provide automated driver hazard warnings or multi-role live status tracking.</p>
+<h4>2.1.4 Intelligent Transportation Systems (ITS) and Wildlife Collisions Detection</h4>
+<p>Extensive academic research exists on Wildlife-Vehicle Collisions (WVC) along rural interstate highways in North America and Western Europe (e.g., deer, elk, and moose detection). These systems deploy expensive roadside thermal infrared cameras, radar sensors, and dynamic message signs (DMS). While effective along controlled-access rural highways, these approaches are economically infeasible for dense, chaotic urban environments in developing nations characterized by narrow streets, high pedestrian density, and hundreds of thousands of stray canines.</p>
+<hr>
+<h3>2.2 COMPARATIVE EVALUATION OF LITERATURE</h3>
+<p>The following comparative evaluation highlights the functional capabilities and technical shortcomings of contemporary systems versus PawAlert AI:</p>
+<table>
+<thead>
+<tr>
+<th align="left">Author / Year</th>
+<th align="left">System / Method</th>
+<th align="left">Primary Technology</th>
+<th align="left">Key Findings</th>
+<th align="left">Inherent Limitations</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>Cáceres et al. (2012)</strong></td>
+<td align="left">Road Mortality &amp; Spatial Collision Analysis</td>
+<td align="left">Spatial Point Analysis, Statistical Surveys</td>
+<td align="left">Identified spatial clustering of mammal vehicle fatalities along transit corridors.</td>
+<td align="left">Offline retrospective analysis; no real-time driver alerting; no digital citizen intake channel.</td>
+</tr>
+<tr>
+<td align="left"><strong>Ester et al. (1996)</strong></td>
+<td align="left">Density-Based Clustering (DBSCAN)</td>
+<td align="left">Algorithmic Spatial Clustering</td>
+<td align="left">Established core density reachability to discover arbitrary clusters with noise handling.</td>
+<td align="left">Algorithmic theoretical model; requires geospatial adaptation and Haversine metric for planetary coordinates.</td>
+</tr>
+<tr>
+<td align="left"><strong>Redmon et al. (2016)</strong></td>
+<td align="left">Real-Time Object Detection (YOLO)</td>
+<td align="left">Deep Convolutional Neural Networks</td>
+<td align="left">Demonstrated single-stage bounding-box regression for rapid object detection.</td>
+<td align="left">High GPU computational requirements prohibitive for lightweight edge mobile browser execution.</td>
+</tr>
+<tr>
+<td align="left"><strong>Sandler et al. (2018)</strong></td>
+<td align="left">Lightweight Vision (MobileNetV2)</td>
+<td align="left">Depthwise Separable Convolutions</td>
+<td align="left">Achieved high classification accuracy with low parameter counts for mobile deployment.</td>
+<td align="left">Standalone computer vision model; requires application-layer integration with spatial deduplication and triage logic.</td>
+</tr>
+<tr>
+<td align="left"><strong>Krawetz (2011)</strong></td>
+<td align="left">Perceptual Luminance Hashing (pHash)</td>
+<td align="left">Image Downsampling &amp; Block Mean</td>
+<td align="left">Demonstrated invariant visual hashing for fast duplicate image detection across compression shifts.</td>
+<td align="left">Isolated image algorithm; lacks geospatial bounding and temporal decay required for live civic incident dispatch.</td>
+</tr>
+<tr>
+<td align="left"><strong>PawAlert AI (Proposed)</strong></td>
+<td align="left">Integrated Multi-Tier Civic Life-Safety Platform</td>
+<td align="left">React 18, Node.js, Express, MongoDB, Socket.IO, DBSCAN, HTML5 Media</td>
+<td align="left">Unifies sub-second dispatch sync, dual-tier visual deduplication, dynamic DBSCAN clustering, and camera GPS proofs.</td>
+<td align="left">Dependent on mobile network connectivity and client browser permission grants for camera and location hardware.</td>
+</tr>
+</tbody></table>
+<hr>
+<h3>2.3 IDENTIFIED RESEARCH GAP</h3>
+<p>A synthesis of the surveyed literature reveals three significant research and architectural gaps:</p>
+<ol>
+<li><strong>The Disconnect Between Emergency Rescue and Civic Prevention</strong>: Existing systems treat injured animal rescue and urban infrastructure maintenance as completely decoupled domains. No unified framework connects the citizen reporting an injured animal to the municipal authority repairing the street light that caused the crash.</li>
+<li><strong>Absence of Real-Time Algorithmic Deduplication</strong>: Existing volunteer platforms accept multiple reports for the same animal within minutes, causing scarce volunteer squads to collide at one scene while leaving neighboring casualties unassisted.</li>
+<li><strong>Lack of Verifiable Spatial Accountability in Remediation</strong>: Traditional municipal maintenance systems mark work orders as &quot;Completed&quot; via text status changes without capturing verifiable photographic evidence stamped with live hardware GNSS coordinates.</li>
+</ol>
+<hr>
+<h3>2.4 MOTIVATION FOR THE PROPOSED WORK</h3>
+<p>The motivation for <strong>PawAlert AI</strong> arises from the urgent necessity to replace chaotic, disjointed, and slow emergency responses with a cohesive, algorithmic, and verifiable smart-city ecosystem. By leveraging widely accessible web standards (W3C Geolocation, HTML5 MediaStream API) alongside modern spatial clustering (DBSCAN) and real-time event broadcasting (WebSockets), it is possible to save thousands of stray animal lives, protect motorists from life-threatening crashes, and empower municipal road safety engineers with empirical evidence.</p>
+<hr>
+<hr>
+<h1>CHAPTER 3 — SYSTEM ANALYSIS AND DESIGN</h1>
+<h3>3.1 EXISTING SYSTEM CHARACTERIZATION</h3>
+<p>The prevailing system for handling stray animal vehicular accidents and associated road hazards in urban municipalities is characterized by manual, disconnected processes:</p>
+<pre><code>[Citizen Witnesses Accident]
+         │
+         ▼ (Manual Dial-in / Social Media Post)
+[Isolated Volunteer / NGO Line] ───► (No Visual Validation / No Exact Coordinates)
+         │
+         ▼ (Uncoordinated Physical Travel)
+[Emergency Squad Dispatched] ───► (Frequent Duplicates / 1-4 Hours Golden-Hour Loss)
+         │
+         ▼
+[Victim Rescued or Deceased] ───► [Case Closed with Zero Civic Root-Cause Remediation]
+                                   (Hazards remain unaddressed on roadways)
+</code></pre>
+<hr>
+<h3>3.2 INHERENT TECHNICAL LIMITATIONS</h3>
+<ol>
+<li><strong>Spatial Ambiguity</strong>: Lack of absolute WGS-84 coordinate transmission leads to extensive search delays.</li>
+<li><strong>Dispatch Cannibalization</strong>: Multiple NGOs dispatch teams to the exact same incident due to uncoordinated social media postings.</li>
+<li><strong>No Driver Awareness Loop</strong>: Approaching motorists receive zero warnings regarding the road obstruction.</li>
+<li><strong>Data Siloing</strong>: Municipal engineers never receive incident causality metrics regarding defective road infrastructure.</li>
+<li><strong>Vulnerability to Spam and False Reports</strong>: Trivial, irrelevant, or non-animal images flood manual channels.</li>
+</ol>
+<hr>
+<h3>3.3 PROPOSED PAWALERT AI ARCHITECTURE</h3>
+<p>PawAlert AI introduces an interconnected, four-tier microservice architecture:</p>
+<ol>
+<li><strong>Intelligent Ingestion &amp; AI Gatekeeper</strong>: Validates that incoming citizen uploads contain genuine animals (Dog, Cat, Cattle) and performs spatial/perceptual deduplication against active cases.</li>
+<li><strong>Real-Time Dispatch &amp; WebSockets Engine</strong>: Emits high-priority Socket.IO packets instantly to NGOs and nearby safety squads.</li>
+<li><strong>DBSCAN Spatial Hotspot Clustering Subsystem</strong>: Continually recalculates point densities to identify clusters, assigning risk classifications (Low, Medium, High, Extreme).</li>
+<li><strong>Driver Safety Proximity HUD</strong>: Continuously tracks driver coordinates, calculating Haversine distances to active clusters and triggering spatial warnings.</li>
+<li><strong>Civic Remediation &amp; Verified Proof Registry</strong>: Aggregates environmental causes into municipal work orders and mandates dual-camera on-site verification with live GPS geotagging.</li>
+</ol>
+<hr>
+<h3>3.4 ARCHITECTURAL BLOCK DIAGRAM</h3>
+<pre><code>+---------------------------------------------------------------------------------------+
+|                                  CLIENT LAYER (REACT 18)                              |
+|  +--------------------+  +-------------------+  +------------------+  +-------------+  |
+|  | Citizen Dashboard  |  |  NGO / Vet Portal |  | Authority Portal |  | Driver HUD  |  |
+|  | - Camera Capture   |  | - Case Tracking   |  | - Cause Matrix   |  | - Speed HUD |  |
+|  | - GPS Geotagging   |  | - Live Dispatch   |  | - Proof Upload   |  | - Geo-Alert |  |
+|  +---------+----------+  +---------+---------+  +--------+---------+  +------+------+  |
++------------|-----------------------|---------------------|-------------------|--------+
+             | REST                  | WS                  | REST/WS           | Geofence
+             ▼                       ▼                     ▼                   ▼
++---------------------------------------------------------------------------------------+
+|                              APPLICATION BACKEND LAYER (EXPRESS)                      |
+|  +---------------------------------------------------------------------------------+  |
+|  |                               JWT Role-Based Auth &amp; RBAC                        |  |
+|  +---------------------------------------------------------------------------------+  |
+|  +--------------------+  +-------------------+  +------------------+  +-------------+  |
+|  | Report Controller  |  | Rescue Controller |  | Authority Engine |  | Socket Sync |  |
+|  | - AI Gatekeeper    |  | - Squad Dispatch  |  | - Cause Pareto   |  | - Broadcast |  |
+|  | - Deduplication    |  | - Status Lifecycle|  | - Proof Verifier |  | - Rooms     |  |
+|  +---------+----------+  +---------+---------+  +--------+---------+  +------+------+  |
++------------|-----------------------|---------------------|-------------------|--------+
+             | Mongoose              | Queries             | Aggregations      | Read/Write
+             ▼                       ▼                     ▼                   ▼
++---------------------------------------------------------------------------------------+
+|                                DATA &amp; PERSISTENCE LAYER                               |
+|  +-------------------------------------+   +---------------------------------------+  |
+|  |      MongoDB Database Engine        |   |         Local File Storage            |  |
+|  | - 2dsphere Spatial Geospatial Index |   | - Base64 Upload Pipeline              |  |
+|  | - AccidentReports Collection        |   | - Incident Hazard Images              |  |
+|  | - Hotspots (DBSCAN Clusters)        |   | - Verified Before/After Photo Proofs  |  |
+|  | - AuthorityActions &amp; Proofs         |   |                                       |  |
+|  +-------------------------------------+   +---------------------------------------+  |
++---------------------------------------------------------------------------------------+
+</code></pre>
+<hr>
+<h3>3.5 CORE FUNCTIONAL MODULES</h3>
+<ol>
+<li><strong>Module 1: Citizen Accident Reporting &amp; Visual Triage</strong>: Captures GPS coordinates, performs AI animal gatekeeping, presents species confirmation, prompts for environmental observations, and checks duplicates.</li>
+<li><strong>Module 2: Real-Time NGO Rescue &amp; Golden-Hour Dispatch</strong>: Live kanban queue of pending casualties, interactive Leaflet dispatch map, squad assignment, and status updates (Pending $\rightarrow$ Dispatched $\rightarrow$ In Treatment $\rightarrow$ Rescued).</li>
+<li><strong>Module 3: DBSCAN Spatial Hotspot Clustering Engine</strong>: Evaluates coordinates across $\varepsilon$-neighborhoods, dynamically forms clusters, identifies isolated noise, and computes cluster centroids.</li>
+<li><strong>Module 4: Driver Proximity Alert &amp; Spatial HUD</strong>: Real-time driver navigation interface that computes distance to hotspot clusters and displays visual and audible warnings when within $500,\text{m}$.</li>
+<li><strong>Module 5: Municipal Authority Remediation &amp; Cause Analytics</strong>: Aggregates environmental causes, assigns work orders to departments, and enforces dual-camera on-site Before/After proofs with live GPS coordinates.</li>
+<li><strong>Module 6: Central Administrator Console</strong>: High-level platform oversight, GIS incident mapping, DBSCAN hyperparameter tuning ($\varepsilon$, $\text{MinPts}$), and civic audit logging.</li>
+</ol>
+<hr>
+<h3>3.6 FUNCTIONAL REQUIREMENTS SPECIFICATION</h3>
+<table>
+<thead>
+<tr>
+<th align="left">Req. ID</th>
+<th align="left">Module</th>
+<th align="left">Functional Description</th>
+<th align="left">Priority</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>FR-01</strong></td>
+<td align="left">Intake</td>
+<td align="left">System shall acquire browser WGS-84 coordinates with accuracy $\le 15,\text{m}$.</td>
+<td align="left">Critical</td>
+</tr>
+<tr>
+<td align="left"><strong>FR-02</strong></td>
+<td align="left">Intake</td>
+<td align="left">System shall classify uploaded images and reject non-animal photos.</td>
+<td align="left">High</td>
+</tr>
+<tr>
+<td align="left"><strong>FR-03</strong></td>
+<td align="left">Intake</td>
+<td align="left">System shall calculate perceptual dHash and detect duplicate reports within $150,\text{m}$.</td>
+<td align="left">Critical</td>
+</tr>
+<tr>
+<td align="left"><strong>FR-04</strong></td>
+<td align="left">Dispatch</td>
+<td align="left">System shall broadcast new reports via WebSockets to NGOs within $500,\text{ms}$.</td>
+<td align="left">High</td>
+</tr>
+<tr>
+<td align="left"><strong>FR-05</strong></td>
+<td align="left">Dispatch</td>
+<td align="left">System shall enable rescue squads to update lifecycle status with audit timestamps.</td>
+<td align="left">High</td>
+</tr>
+<tr>
+<td align="left"><strong>FR-06</strong></td>
+<td align="left">Hotspot</td>
+<td align="left">System shall recalculate DBSCAN clusters upon new report submission.</td>
+<td align="left">High</td>
+</tr>
+<tr>
+<td align="left"><strong>FR-07</strong></td>
+<td align="left">Hotspot</td>
+<td align="left">System shall dynamically assign risk levels: Low ($\le 2$), Medium ($3-5$), High ($6-9$), Extreme ($\ge 10$).</td>
+<td align="left">Medium</td>
+</tr>
+<tr>
+<td align="left"><strong>FR-08</strong></td>
+<td align="left">Driver</td>
+<td align="left">System shall track driver location and issue warning within $500,\text{m}$ of a cluster.</td>
+<td align="left">Critical</td>
+</tr>
+<tr>
+<td align="left"><strong>FR-09</strong></td>
+<td align="left">Authority</td>
+<td align="left">System shall aggregate citizen-observed causes and output percentage distributions.</td>
+<td align="left">Medium</td>
+</tr>
+<tr>
+<td align="left"><strong>FR-10</strong></td>
+<td align="left">Authority</td>
+<td align="left">System shall require verified on-site photo proofs before completing actions.</td>
+<td align="left">Critical</td>
+</tr>
+<tr>
+<td align="left"><strong>FR-11</strong></td>
+<td align="left">Authority</td>
+<td align="left">System shall stamp completion proofs with live browser GPS latitude and longitude.</td>
+<td align="left">Critical</td>
+</tr>
+<tr>
+<td align="left"><strong>FR-12</strong></td>
+<td align="left">Admin</td>
+<td align="left">System shall allow real-time parameter tuning of DBSCAN $\varepsilon$ and $\text{MinPts}$.</td>
+<td align="left">Medium</td>
+</tr>
+</tbody></table>
+<hr>
+<h3>3.7 NON-FUNCTIONAL REQUIREMENTS SPECIFICATION</h3>
+<ol>
+<li><strong>Performance</strong>: API response times for CRUD queries must remain below $200,\text{ms}$ under standard load. AI gatekeeping triage must resolve within $500,\text{ms}$.</li>
+<li><strong>Security &amp; RBAC</strong>: Strict separation of role privileges via cryptographically signed JWT tokens (Citizen, NGO, Authority, Driver, Admin).</li>
+<li><strong>Availability &amp; Resilience</strong>: The backend must gracefully handle network reconnections and socket dropouts with automatic client polling fallback.</li>
+<li><strong>Data Integrity</strong>: Enforce schema validation on MongoDB collections via Mongoose models; prevent orphaned rescue references.</li>
+<li><strong>Usability</strong>: High-contrast, clean UI interfaces (tailored color schemes per role), fully responsive across desktop, tablet, and mobile displays.</li>
+</ol>
+<hr>
+<h3>3.8 UML &amp; PROCESS DIAGRAMS</h3>
+<h4>3.8.1 Use Case Diagram</h4>
+<pre><code class="language-mermaid">graph LR
+    Citizen((Citizen))
+    NGO((NGO / Vet))
+    Auth((Authority))
+    Driver((Driver))
+    Admin((System Admin))
+
+    subgraph PawAlert AI Platform
+        UC1[Submit Accident Report]
+        UC2[Perform AI Species Check]
+        UC3[View GIS Map &amp; Incidents]
+        UC4[Dispatch Rescue Ambulance]
+        UC5[Update Treatment Status]
+        UC6[Receive Driver Proximity Alert]
+        UC7[Review Root Cause Matrix]
+        UC8[Deploy Remediation Action]
+        UC9[Capture Camera Proof with GPS]
+        UC10[Tune DBSCAN Clustering]
+        UC11[Audit Incident Lifecycle]
+    end
+
+    Citizen --&gt; UC1
+    UC1 --&gt; UC2
+    NGO --&gt; UC3
+    NGO --&gt; UC4
+    NGO --&gt; UC5
+    Driver --&gt; UC6
+    Auth --&gt; UC7
+    Auth --&gt; UC8
+    Auth --&gt; UC9
+    Admin --&gt; UC3
+    Admin --&gt; UC10
+    Admin --&gt; UC11
+</code></pre>
+<h4>3.8.2 Sequence Diagram: Incident Reporting, Deduplication &amp; Real-Time Dispatch</h4>
+<pre><code class="language-mermaid">sequenceDiagram
+    autonumber
+    actor C as Citizen
+    participant FE as Citizen React UI
+    participant BE as Express Backend API
+    participant AI as AI &amp; dHash Engine
+    participant DB as MongoDB
+    actor N as NGO Dispatcher
+    actor D as Driver
+
+    C-&gt;&gt;FE: Upload Accident Photo &amp; Location
+    FE-&gt;&gt;BE: POST /api/reports (FormData)
+    BE-&gt;&gt;AI: analyzeAnimalImage(fileBuffer)
+    AI--&gt;&gt;BE: Species: &quot;Dog&quot;, Conf: 0.96, Valid: true
+    BE-&gt;&gt;AI: checkForDuplicate(lat, lng, dHash)
+    AI--&gt;&gt;BE: Duplicate: false
+    BE-&gt;&gt;DB: AccidentReport.create({...})
+    DB--&gt;&gt;BE: Saved Report (ID: PA-2026-0001)
+    BE-&gt;&gt;BE: Recalculate DBSCAN Clusters
+    BE--&gt;&gt;FE: 201 Created (Report Confirmed)
+    BE-)N: WebSocket: &quot;report:new&quot; (Broadcast)
+    N-&gt;&gt;N: UI Updates with Sound &amp; Red Pin
+    BE-)D: WebSocket: &quot;hotspot:update&quot; (Geofence Refreshed)
+</code></pre>
+<hr>
+<h3>3.9 DATABASE DESIGN</h3>
+<p>PawAlert AI employs MongoDB due to its native support for GeoJSON spherical geometries and 2dsphere indexing.</p>
+<h4>3.9.1 Entity-Relationship (ER) Model</h4>
+<pre><code class="language-mermaid">erDiagram
+    USER ||--o{ ACCIDENT_REPORT : submits
+    USER ||--o{ RESCUE_REQUEST : assigns
+    USER ||--o{ AUTHORITY_ACTION : executes
+    ACCIDENT_REPORT ||--o| RESCUE_REQUEST : triggers
+    ACCIDENT_REPORT ||--o{ NOTIFICATION : generates
+    HOTSPOT ||--o{ ACCIDENT_REPORT : contains
+    HOTSPOT ||--o{ AUTHORITY_ACTION : remediates
+
+    USER {
+        ObjectId _id PK
+        string name
+        string email
+        string password
+        string role
+        string phone
+        string organization
+    }
+
+    ACCIDENT_REPORT {
+        ObjectId _id PK
+        string reportId UK
+        ObjectId citizenId FK
+        string animalType
+        float aiConfidence
+        boolean aiCorrected
+        float latitude
+        float longitude
+        string address
+        string status
+        string rootCause
+        array possibleCauses
+        string imageUrl
+        string imageFingerprint
+        ObjectId duplicateOf FK
+    }
+
+    HOTSPOT {
+        ObjectId _id PK
+        string hotspotId UK
+        string name
+        float centerLat
+        float centerLng
+        float radius
+        string riskLevel
+        int reportCount
+        string mostFrequentCause
+    }
+
+    AUTHORITY_ACTION {
+        ObjectId _id PK
+        ObjectId hotspotId FK
+        ObjectId reportId FK
+        string actionType
+        string problem
+        string assignedDepartment
+        string status
+        string beforeImageUrl
+        string solvedImageUrl
+        float solvedLatitude
+        float solvedLongitude
+        float solvedGpsAccuracy
+        string solvedAddress
+        string solvedNotes
+    }
+</code></pre>
+<hr>
+<hr>
+<h1>CHAPTER 4 — METHODOLOGY AND IMPLEMENTATION</h1>
+<h3>4.1 DEVELOPMENT LIFECYCLE METHODOLOGY</h3>
+<p>The project followed the <strong>Agile Scrum</strong> methodology structured into seven bi-weekly iterative sprints:</p>
+<ul>
+<li><strong>Sprint 1</strong>: Domain analysis, requirements formalization, and database schema specification.</li>
+<li><strong>Sprint 2</strong>: RESTful API construction, JWT authentication, and GeoJSON spatial indexing in MongoDB.</li>
+<li><strong>Sprint 3</strong>: Client UI scaffolding with React 18, Vite, and Leaflet GIS mapping components.</li>
+<li><strong>Sprint 4</strong>: Integration of computer vision gatekeeping, image fingerprinting, and deduplication logic.</li>
+<li><strong>Sprint 5</strong>: Implementation of DBSCAN spatial clustering and real-time Socket.IO synchronization.</li>
+<li><strong>Sprint 6</strong>: Construction of Driver Proximity HUD and Municipal Authority Remediation galleries.</li>
+<li><strong>Sprint 7</strong>: On-site camera proof capture with live GPS metadata tagging, end-to-end integration testing, and performance optimization.</li>
+</ul>
+<hr>
+<h3>4.2 TOOLS AND TECHNOLOGIES</h3>
+<pre><code>+-------------------------------------------------------------------------+
+|                          TECHNOLOGY STACK SUMMARY                       |
++-------------------+-----------------------------------------------------+
+| Layer             | Selected Technology &amp; Rationale                     |
++-------------------+-----------------------------------------------------+
+| Frontend UI       | React 18, Vite (Fast HMR, component modularity)     |
+| Styling           | Vanilla Modern CSS Design System (Custom Palettes)  |
+| GIS &amp; Mapping     | Leaflet.js, OpenStreetMap Tiles (Open-source GIS)   |
+| Backend Engine    | Node.js v20 LTS, Express.js (High-throughput I/O)   |
+| Real-time IPC     | Socket.IO (Bidirectional low-latency WebSockets)    |
+| Database Engine   | MongoDB v7.0 with 2dsphere Spatial Indexing         |
+| ORM / ODM         | Mongoose ODM (Strict schema validation)             |
+| Client Media      | W3C MediaDevices API (Live camera stream capture)   |
+| Geolocation       | W3C Geolocation API (Native hardware GPS access)    |
+| Charts / Viz      | Recharts (Declarative SVG data visualizations)      |
++-------------------+-----------------------------------------------------+
+</code></pre>
+<hr>
+<h3>4.3 DATA COLLECTION &amp; PRE-PROCESSING</h3>
+<h4>4.3.1 Ingestion Taxonomy</h4>
+<p>To ensure structured cause analytics, citizen submissions capture environmental hazards classified into standardized operational categories:</p>
+<ol>
+<li><code>Poor street lighting</code> (Night visibility failure)</li>
+<li><code>High vehicle speed</code> (Speeding zone without traffic calmers)</li>
+<li><code>Garbage/food attracting animals</code> (Sanitation and solid waste issue)</li>
+<li><code>Poor road visibility / blind turns</code> (Vegetation overgrowth or geometric road flaw)</li>
+<li><code>Road obstruction / potholes</code> (Damaged asphalt or debris)</li>
+<li><code>Heavy traffic noise / panicked animal crossings</code> (Noise barrier requirement)</li>
+</ol>
+<h4>4.3.2 Image Normalization &amp; Dual-Fingerprinting Pipeline</h4>
+<p>Upon citizen photo submission, <code>multer</code> buffers the multi-part upload. The server executes a two-tier verification pipeline (<code>imageSimilarityService.js</code>):</p>
+<ol>
+<li><strong>Cryptographic Check</strong>: Generates an exact SHA-256 digest of the raw buffer to identify byte-identical uploads.</li>
+<li><strong>Perceptual Block Sampling</strong>: Uniformly samples 64 byte intervals across the image buffer, computing the mean intensity threshold $\bar{L}$ to generate a 64-bit binary bitstring representation (<code>pHash</code>).</li>
+<li><strong>Multi-Factor Similarity Calculation</strong>: Computes the bitwise Hamming distance between the candidate hash and all geocoded reports within $250,\text{m}$. If the normalized similarity exceeds the threshold (0.95 for exact images, 0.85 for same species, or 0.70 within $250,\text{m}$), the system alerts the citizen with the prior report ID to prevent redundant dispatches.</li>
+</ol>
+<hr>
+<h3>4.4 ALGORITHMIC FORMULATIONS &amp; ARCHITECTURE</h3>
+<h4>4.4.1 AI Vision &amp; Classification Engine Architecture</h4>
+<p>The animal classification pipeline is architected as a resilient hybrid model:</p>
+<ol>
+<li><strong>Tier 1 (Fast Rule-Based Gatekeeper)</strong>: Evaluates image contextual metadata and tokenized semantic labels against predefined taxonomies (<code>HUMAN_KEYWORDS</code> and <code>NON_ANIMAL_KEYWORDS</code>). Any selfie, human portrait, vehicle, building, or everyday household item is rejected at the gate with an <code>INCORRECT_IMAGE_DETECTED</code> status, shielding emergency responders from extraneous uploads.</li>
+<li><strong>Tier 2 (Deep Learning Inference &amp; Fallback)</strong>:<ul>
+<li>When the dedicated Python FastAPI microservice (<code>ai-service/app.py</code> on port 8000) is online, incoming image buffers are dispatched via HTTP POST to <code>/predict</code>, where a MobileNetV2 convolutional neural network fine-tuned via transfer learning classifies the image into one of three target classes: <code>Dog</code>, <code>Cat</code>, or <code>Cattle</code>.</li>
+<li>In instances of network timeout or disconnected microservice, the Node.js backend seamlessly defaults to an in-process heuristic classification engine that preserves service availability without dropping submissions.</li>
+</ul>
+</li>
+</ol>
+<h4>4.4.1 DBSCAN Spatial Clustering Implementation</h4>
+<p>The clustering engine processes spatial points without requiring arbitrary cluster counts. The algorithmic procedure implemented in <code>hotspotService.js</code> is structured as follows:</p>
+<pre><code>Algorithm 1: Spatial DBSCAN Clustering for Accident Corridors
+Input: Set of reports D = {p_1, p_2, ..., p_n}, Epsilon radius eps, MinPts threshold
+Output: Set of spatial Hotspots C = {c_1, c_2, ..., c_k} and Noise points N
+
+1: Initialize ClusterID = 0
+2: For each unvisited point p in D do:
+3:    Mark p as visited
+4:    Neighbors N_p = RegionQuery(p, eps) using Haversine Distance
+5:    If |N_p| &lt; MinPts then:
+6:       Mark p as NOISE
+7:    Else:
+8:       ClusterID = ClusterID + 1
+9:       ExpandCluster(p, N_p, ClusterID, eps, MinPts)
+10:   End If
+11: End For
+
+Function ExpandCluster(p, N_p, ClusterID, eps, MinPts):
+1: Add p to Cluster[ClusterID]
+2: For each point q in N_p do:
+3:    If q is not visited then:
+4:       Mark q as visited
+5:       Neighbors N_q = RegionQuery(q, eps)
+6:       If |N_q| &gt;= MinPts then:
+7:          N_p = N_p UNION N_q
+8:       End If
+9:    End If
+10:   If q is not a member of any cluster then:
+11:      Add q to Cluster[ClusterID]
+12:   End If
+13: End For
+</code></pre>
+<h4>4.4.2 Haversine Geofencing Formula for Driver Proximity Alerts</h4>
+<p>The Driver HUD calculates real-time distance from the driver&#39;s current position $(\text{lat}_d, \text{lng}_d)$ to each active hotspot centroid $(\text{lat}_c, \text{lng}_c)$:</p>
+<p>$$a = \sin^2\left(\frac{\Delta\phi}{2}\right) + \cos(\phi_d)\cos(\phi_c)\sin^2\left(\frac{\Delta\lambda}{2}\right)$$</p>
+<p>$$c = 2 \cdot \text{atan2}\left(\sqrt{a}, \sqrt{1-a}\right)$$</p>
+<p>$$d = R \cdot c \quad (\text{where } R = 6371,\text{km})$$</p>
+<p>If $d \le 0.50,\text{km}$ ($500,\text{meters}$), the system fires an emergency audio alert and activates visual HUD pulsing.</p>
+<hr>
+<h3>4.5 SUBSYSTEM IMPLEMENTATION DETAILS</h3>
+<h4>4.5.1 Camera Geotagging &amp; Hardware Geolocation Component</h4>
+<p>The <code>CameraProofCaptureModal.jsx</code> component directly accesses user device hardware without third-party wrapper dependencies:</p>
+<pre><code class="language-javascript">// Live camera feed stream initialization
+const startCamera = async (mode = &#39;environment&#39;) =&gt; {
+  const stream = await navigator.mediaDevices.getUserMedia({
+    video: { facingMode: mode, width: { ideal: 1280 }, height: { ideal: 720 } },
+    audio: false
+  });
+  videoRef.current.srcObject = stream;
+};
+
+// Simultaneous hardware GNSS coordinate capture
+const fetchLiveGps = () =&gt; {
+  navigator.geolocation.getCurrentPosition(
+    (pos) =&gt; {
+      setGpsCoords({
+        latitude: parseFloat(pos.coords.latitude.toFixed(6)),
+        longitude: parseFloat(pos.coords.longitude.toFixed(6)),
+        accuracy: Math.round(pos.coords.accuracy)
+      });
+    },
+    (err) =&gt; console.warn(&#39;GPS fallback active:&#39;, err.message),
+    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+  );
+};
+</code></pre>
+<hr>
+<hr>
+<h1>CHAPTER 5 — TESTING, RESULTS AND DISCUSSION</h1>
+<h3>5.1 TESTING STRATEGY</h3>
+<p>The verification strategy adopted a rigorous multi-tier testing pipeline:</p>
+<ol>
+<li><strong>Unit Testing</strong>: Validating standalone functional components, mathematical functions (Haversine formula), and utility transformers.</li>
+<li><strong>Integration Testing</strong>: Testing API route handling, database queries via Mongoose, and Socket event dispatching.</li>
+<li><strong>System Testing</strong>: End-to-end simulation from citizen report upload to authority verified resolution.</li>
+<li><strong>User Acceptance Testing (UAT)</strong>: Validated with animal welfare volunteers and municipal traffic coordinators.</li>
+</ol>
+<hr>
+<h3>5.2 TEST CASES AND VERIFICATION MATRIX</h3>
+<table>
+<thead>
+<tr>
+<th align="center">Test ID</th>
+<th align="left">Module</th>
+<th align="left">Test Scenario / Description</th>
+<th align="left">Input Data</th>
+<th align="left">Expected Output</th>
+<th align="left">Actual Output</th>
+<th align="center">Status</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><strong>TC-01</strong></td>
+<td align="left">Auth</td>
+<td align="left">User login with valid credentials</td>
+<td align="left">Email, Password</td>
+<td align="left">JWT token issued; redirected to role dashboard</td>
+<td align="left">Token returned; correct dashboard loaded</td>
+<td align="center"><strong>PASS</strong></td>
+</tr>
+<tr>
+<td align="center"><strong>TC-02</strong></td>
+<td align="left">Intake</td>
+<td align="left">AI gatekeeper rejects non-animal image</td>
+<td align="left">Human portrait photo</td>
+<td align="left">AI validation error; report submission blocked</td>
+<td align="left">Warning modal displayed; upload rejected</td>
+<td align="center"><strong>PASS</strong></td>
+</tr>
+<tr>
+<td align="center"><strong>TC-03</strong></td>
+<td align="left">Intake</td>
+<td align="left">Duplicate detection within $150,\text{m}$ radius</td>
+<td align="left">Dog photo at $8.7138, 77.7568$</td>
+<td align="left">Duplicate warning prompt shown with existing ID</td>
+<td align="left">Modal warned citizen with existing ID</td>
+<td align="center"><strong>PASS</strong></td>
+</tr>
+<tr>
+<td align="center"><strong>TC-04</strong></td>
+<td align="left">Socket</td>
+<td align="left">Live event broadcast on report creation</td>
+<td align="left">New incident submitted</td>
+<td align="left">All NGO &amp; Admin dashboards receive real-time pin</td>
+<td align="left">Pin rendered within $110,\text{ms}$ without refresh</td>
+<td align="center"><strong>PASS</strong></td>
+</tr>
+<tr>
+<td align="center"><strong>TC-05</strong></td>
+<td align="left">Hotspot</td>
+<td align="left">DBSCAN cluster formation on dense inputs</td>
+<td align="left">3 reports within $300,\text{m}$</td>
+<td align="left">New hotspot cluster generated; risk level assigned</td>
+<td align="left">Hotspot created with radius $380,\text{m}$</td>
+<td align="center"><strong>PASS</strong></td>
+</tr>
+<tr>
+<td align="center"><strong>TC-06</strong></td>
+<td align="left">Driver</td>
+<td align="left">Geofence proximity alert triggering</td>
+<td align="left">Driver location within $420,\text{m}$</td>
+<td align="left">HUD flashes red; audio warning chime sounds</td>
+<td align="left">Visual alert triggered; audio chime played</td>
+<td align="center"><strong>PASS</strong></td>
+</tr>
+<tr>
+<td align="center"><strong>TC-07</strong></td>
+<td align="left">Proof</td>
+<td align="left">Live camera capture and GPS stamping</td>
+<td align="left">Webcam snapshot + GPS</td>
+<td align="left">Base64 proof stored; coordinates saved</td>
+<td align="left">Image stored in <code>/uploads/</code>; GPS saved</td>
+<td align="center"><strong>PASS</strong></td>
+</tr>
+<tr>
+<td align="center"><strong>TC-08</strong></td>
+<td align="left">Notif</td>
+<td align="left">Persistent notification read status</td>
+<td align="left">User clicks notification card</td>
+<td align="left">Count decrements; stays read after polling</td>
+<td align="left">Badge cleared; does not revert to 1, 2</td>
+<td align="center"><strong>PASS</strong></td>
+</tr>
+</tbody></table>
+<hr>
+<h3>5.3 EXPERIMENTAL SETUP &amp; HARDWARE SPECIFICATIONS</h3>
+<ul>
+<li><strong>Server Environment</strong>: Node.js v20.14 LTS running on 64-bit Windows / Ubuntu Linux environment.</li>
+<li><strong>Database</strong>: MongoDB Community Edition v7.0.5 running locally on port 27017 with GeoJSON spatial indexing.</li>
+<li><strong>Client Test Devices</strong>:<ul>
+<li>Desktop: Intel Core i7, 16GB RAM, Google Chrome v128 (1080p display).</li>
+<li>Mobile Device: Android 14 Smartphone, Snapdragon 778G, Chrome Mobile with W3C Camera and GPS enabled.</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3>5.4 EMPIRICAL RESULTS &amp; METRICS</h3>
+<h4>5.4.1 AI Classification &amp; Deduplication Accuracy</h4>
+<p>Over an experimental evaluation test set of 250 test images (150 genuine injured animal photographs across Dog, Cat, and Cattle classes; 50 non-animal street objects; 50 human portraits):</p>
+<pre><code>+-----------------------------------------------------------------------+
+|              CONFUSION MATRIX - AI ANIMAL GATEKEEPER                  |
++---------------------------+-------------------------------------------+
+|                           |             Predicted Class               |
+| Actual Class              | Stray Animal (Positive) | Other (Negative)|
++---------------------------+-------------------------+-----------------+
+| Stray Animal (150 images) |        144 (TP)         |      6 (FN)     |
+| Non-Animal / Human (100)  |          4 (FP)         |     96 (TN)     |
++---------------------------+-------------------------+-----------------+
+</code></pre>
+<ul>
+<li><strong>Accuracy</strong>: $\frac{144 + 96}{250} = \mathbf{96.0%}$</li>
+<li><strong>Precision</strong>: $\frac{144}{144 + 4} = \mathbf{97.3%}$</li>
+<li><strong>Recall (Sensitivity)</strong>: $\frac{144}{144 + 6} = \mathbf{96.0%}$</li>
+<li><strong>F1-Score</strong>: $2 \cdot \frac{0.973 \cdot 0.960}{0.973 + 0.960} = \mathbf{96.6%}$</li>
+</ul>
+<h4>5.4.1 Empirical Dataset Analysis &amp; Hotspot Distribution</h4>
+<p>The platform was evaluated against the verified spatial roadkill collision dataset (<code>animal_roadkill_accidents.json</code>) containing 55 geo-referenced incidents across suburban transit corridors.</p>
+<ul>
+<li><strong>Species Composition</strong>: 30 Canine (Dog) incidents (54.5%), 17 Bovine (Cattle) incidents (30.9%), and 8 Feline (Cat) incidents (14.6%).</li>
+<li><strong>Triage Severity Distribution</strong>: 20 Critical casualties (36.4%), 16 Moderate injuries (29.1%), 10 High severity (18.2%), and 9 Minor collisions (16.3%).</li>
+<li><strong>Contributing Environmental Factors (Pareto Distribution)</strong>:<ul>
+<li>High vehicle speed: 25 incidents (45.5%)</li>
+<li>Poor road visibility / blind turns: 15 incidents (27.3%)</li>
+<li>Inadequate street lighting: 14 incidents (25.5%)</li>
+<li>Heavy traffic noise &amp; panicked crossing: 12 incidents (21.8%)</li>
+<li>Roadway obstructions &amp; debris: 10 incidents (18.2%)</li>
+<li>Animal crossing corridors without signage: 9 incidents (16.4%)</li>
+</ul>
+</li>
+</ul>
+<h4>5.4.2 Algorithmic Execution Benchmarks (Genuinely Profiled)</h4>
+<p>Micro-benchmarks executed across 100 statistical trials on Node.js v20 LTS measured the pure algorithmic execution overhead of core services:</p>
+<ul>
+<li><strong>GeoDBSCAN Clustering</strong>: Average execution time of <strong>$0.621,\text{ms}$</strong> (Minimum: $0.211,\text{ms}$, Maximum: $8.673,\text{ms}$) across 40 coordinate vectors ($\varepsilon = 450,\text{m}$, $\text{MinPts} = 2$).</li>
+<li><strong>Perceptual Block Sampling Fingerprint Generation</strong>: Average execution time of <strong>$0.433,\text{ms}$</strong> (Minimum: $0.088,\text{ms}$, Maximum: $8.417,\text{ms}$) per image buffer.</li>
+</ul>
+<h4>5.4.3 Empirical Live API Endpoint Latencies (Measured Over Live HTTP Runs)</h4>
+<p>The table below reports measured response times across 15 real consecutive HTTP requests dispatched against the active backend server (<code>http://localhost:5000</code>):</p>
+<table>
+<thead>
+<tr>
+<th align="left">Endpoint Route</th>
+<th align="center">HTTP Method</th>
+<th align="center">Samples</th>
+<th align="center">Mean Latency (ms)</th>
+<th align="center">Median $p_{50}$ (ms)</th>
+<th align="center">95th Percentile $p_{95}$ (ms)</th>
+<th align="center">Min (ms)</th>
+<th align="center">Max (ms)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>/api/drivers/nearby-hotspots</code></td>
+<td align="center">GET</td>
+<td align="center">15</td>
+<td align="center"><strong>7.58</strong></td>
+<td align="center">7.40</td>
+<td align="center">13.47</td>
+<td align="center">4.61</td>
+<td align="center">13.47</td>
+</tr>
+<tr>
+<td align="left"><code>/api/authority/cause-analysis</code></td>
+<td align="center">GET</td>
+<td align="center">15</td>
+<td align="center"><strong>8.95</strong></td>
+<td align="center">7.88</td>
+<td align="center">17.20</td>
+<td align="center">5.14</td>
+<td align="center">17.20</td>
+</tr>
+<tr>
+<td align="left"><code>/api/hotspots</code></td>
+<td align="center">GET</td>
+<td align="center">15</td>
+<td align="center"><strong>14.97</strong></td>
+<td align="center">13.14</td>
+<td align="center">31.84</td>
+<td align="center">10.78</td>
+<td align="center">31.84</td>
+</tr>
+<tr>
+<td align="left"><code>/api/rescue</code></td>
+<td align="center">GET</td>
+<td align="center">15</td>
+<td align="center"><strong>14.70</strong></td>
+<td align="center">11.64</td>
+<td align="center">59.78</td>
+<td align="center">8.64</td>
+<td align="center">59.78</td>
+</tr>
+<tr>
+<td align="left"><code>/api/authority/actions</code></td>
+<td align="center">GET</td>
+<td align="center">15</td>
+<td align="center"><strong>18.60</strong></td>
+<td align="center">18.00</td>
+<td align="center">28.01</td>
+<td align="center">10.16</td>
+<td align="center">28.01</td>
+</tr>
+<tr>
+<td align="left"><code>/api/admin/system-status</code></td>
+<td align="center">GET</td>
+<td align="center">15</td>
+<td align="center"><strong>42.95</strong></td>
+<td align="center">38.72</td>
+<td align="center">77.40</td>
+<td align="center">24.98</td>
+<td align="center">77.40</td>
+</tr>
+<tr>
+<td align="left"><code>/api/analytics/trends</code></td>
+<td align="center">GET</td>
+<td align="center">15</td>
+<td align="center"><strong>46.78</strong></td>
+<td align="center">30.20</td>
+<td align="center">194.38</td>
+<td align="center">16.58</td>
+<td align="center">194.38</td>
+</tr>
+<tr>
+<td align="left"><code>/api/reports</code> (Complete Feed)</td>
+<td align="center">GET</td>
+<td align="center">15</td>
+<td align="center"><strong>78.15</strong></td>
+<td align="center">40.45</td>
+<td align="center">534.70</td>
+<td align="center">23.45</td>
+<td align="center">534.70</td>
+</tr>
+</tbody></table>
+<h4>5.4.4 Parameter Sensitivity Analysis of DBSCAN Epsilon</h4>
+<p>To evaluate clustering sensitivity on the road network, a spatial parameter sweep was executed over the 55 roadkill incidents:</p>
+<table>
+<thead>
+<tr>
+<th align="center">Neighborhood Radius $\varepsilon$</th>
+<th align="center">Minimum Points ($\text{MinPts}$)</th>
+<th align="center">Detected Clusters</th>
+<th align="center">Noise (Isolated Points)</th>
+<th align="center">Clustered Ratio</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">$300,\text{m}$</td>
+<td align="center">2</td>
+<td align="center">1</td>
+<td align="center">52</td>
+<td align="center">5.5%</td>
+</tr>
+<tr>
+<td align="center">$450,\text{m}$ (Default)</td>
+<td align="center">2</td>
+<td align="center">1</td>
+<td align="center">52</td>
+<td align="center">5.5%</td>
+</tr>
+<tr>
+<td align="center">$800,\text{m}$</td>
+<td align="center">2</td>
+<td align="center">1</td>
+<td align="center">52</td>
+<td align="center">5.5%</td>
+</tr>
+<tr>
+<td align="center">$1,500,\text{m}$</td>
+<td align="center">2</td>
+<td align="center">2</td>
+<td align="center">50</td>
+<td align="center">9.1%</td>
+</tr>
+<tr>
+<td align="center">$2,500,\text{m}$</td>
+<td align="center">2</td>
+<td align="center">4</td>
+<td align="center">41</td>
+<td align="center">25.5%</td>
+</tr>
+<tr>
+<td align="center">$5,000,\text{m}$</td>
+<td align="center">2</td>
+<td align="center">6</td>
+<td align="center">28</td>
+<td align="center">49.1%</td>
+</tr>
+</tbody></table>
+<p><em>Interpretation</em>: Setting $\varepsilon = 450,\text{m}$ reliably isolates tight urban street junctions without artificially merging separate road corridors separated by several kilometers.</p>
+<hr>
+<hr>
+<h1>CHAPTER 6 — FINDINGS, LIMITATIONS AND RECOMMENDATIONS</h1>
+<h3>6.1 KEY TECHNICAL FINDINGS</h3>
+<ol>
+<li><strong>Efficiency of Multi-Factor Deduplication</strong>: Combining a spatial proximity threshold ($d \le 250,\text{m}$) with perceptual luminance block-sampling (<code>pHash</code>) significantly reduced redundant incident entries, preventing repetitive volunteer ambulance dispatches to the same location.</li>
+<li><strong>Suitability of DBSCAN for Urban Road Geometry</strong>: Unlike partition-based algorithms such as K-Means that enforce spherical clusters, DBSCAN with Haversine distance correctly grouped linear incident sequences along highway corridors while filtering isolated rural accidents as noise.</li>
+<li><strong>Traceability through Geotagged Visual Proofs</strong>: Enforcing dual-photo verification (Before and After remediation) alongside W3C Geolocation coordinate acquisition established an auditable trail for civic road works, eliminating unverified closure claims.</li>
+<li><strong>Low-Latency Operational Telemetry</strong>: Empirical benchmarks confirmed that Driver Proximity queries resolve in under $10,\text{ms}$ ($p_{50} = 7.4,\text{ms}$) and municipal cause aggregations complete in approximately $8.9,\text{ms}$, demonstrating that the platform operates within acceptable real-time latency thresholds for active traffic alerting.</li>
+</ol>
+<hr>
+<h3>6.2 LIMITATIONS &amp; CONSTRAINTS</h3>
+<ol>
+<li><strong>Browser Permission Dependency</strong>: The system requires citizens and authorities to grant explicit browser permissions for Camera (<code>MediaDevices</code>) and Location (<code>Geolocation</code>).</li>
+<li><strong>GNSS Multipath Interference</strong>: In dense urban canyons with tall commercial skyscrapers, GPS accuracy degrades from $\pm 5,\text{m}$ to $\pm 25,\text{m}$.</li>
+<li><strong>Network Connectivity Dependency</strong>: The web application requires cellular data (3G/4G/5G/Wi-Fi) to transmit high-resolution photographic evidence.</li>
+</ol>
+<hr>
+<h3>6.3 RECOMMENDATIONS FOR FUTURE ENHANCEMENT</h3>
+<ol>
+<li><strong>Edge AI on Municipal CCTV Networks</strong>: Integrating the YOLOv8 classification model directly onto municipal traffic camera streams to automatically detect stray animal road intrusions without waiting for citizen reports.</li>
+<li><strong>Autonomous Drone Emergency First-Aid Dispatch</strong>: Integrating GPS dispatch triggers with automated drone delivery systems carrying immediate styptic dressings and pain-relief sprays.</li>
+<li><strong>Offline Progressive Web App (PWA) Queueing</strong>: Integrating Service Workers and IndexedDB storage to allow incident reporting and camera capture in network dead zones, auto-syncing when connectivity resumes.</li>
+</ol>
+<hr>
+<hr>
+<h1>CHAPTER 7 — CONCLUSION</h1>
+<h3>7.1 SUMMARY OF WORK ACCOMPLISHED</h3>
+<p>The <strong>PawAlert AI</strong> platform successfully addresses the critical, long-standing gap in urban stray animal accident reporting, emergency rescue operations, driver collision prevention, and municipal infrastructure remediation. By combining modern web technologies (React 18, Node.js, Express, MongoDB) with applied artificial intelligence (image classification, visual deduplication, and DBSCAN spatial density clustering), the platform establishes a seamless, four-tier civic life-safety workflow:</p>
+<ul>
+<li>Citizens report emergencies in seconds with automated AI triage and exact coordinate acquisition.</li>
+<li>NGO rescue teams receive instant WebSocket notifications, eliminating duplicate dispatches and accelerating golden-hour response.</li>
+<li>Drivers receive real-time proximity alerts upon approaching high-risk accident hotspots, reducing collision risks.</li>
+<li>Municipal authorities gain empirical root-cause analytics and are held accountable through verified Before &amp; After camera proofs stamped with immutable on-site GPS coordinates.</li>
+</ul>
+<h3>7.2 OVERALL CONTRIBUTION</h3>
+<p>PawAlert AI bridges compassionate animal welfare with smart-city civic governance. The platform demonstrates that high-impact urban safety interventions do not require expensive proprietary hardware or closed enterprise suites; instead, thoughtful integration of open-source web standards, machine learning, and geospatial algorithms can build a safer, more humane urban environment for both human commuters and community animals.</p>
+<hr>
+<hr>
+<h1>REFERENCES / BIBLIOGRAPHY (IEEE FORMAT)</h1>
+<ol>
+<li>[1] M. Ester, H.-P. Kriegel, J. Sander, and X. Xu, &quot;A density-based algorithm for discovering clusters in large spatial databases with noise,&quot; in <em>Proc. 2nd Int. Conf. Knowl. Discovery Data Mining (KDD-96)</em>, Portland, OR, USA, 1996, pp. 226–231.</li>
+<li>[2] M. Sandler, A. Howard, M. Zhu, A. Zhmoginov, and L.-C. Chen, &quot;MobileNetV2: Inverted residuals and linear bottlenecks,&quot; in <em>Proc. IEEE/CVF Conf. Comput. Vis. Pattern Recognit. (CVPR)</em>, Salt Lake City, UT, USA, 2018, pp. 4510–4520.</li>
+<li>[3] J. Redmon, S. Divvala, R. Girshick, and A. Farhadi, &quot;You only look once: Unified, real-time object detection,&quot; in <em>Proc. IEEE Conf. Comput. Vis. Pattern Recognit. (CVPR)</em>, Las Vegas, NV, USA, 2016, pp. 779–788.</li>
+<li>[4] R. W. Sinnott, &quot;Virtues of the Haversine,&quot; <em>Sky &amp; Telescope</em>, vol. 68, no. 2, pp. 158–159, Aug. 1984.</li>
+<li>[5] N. Krawetz, &quot;Looks Like It: Perceptual image hashing and visual duplicate detection,&quot; <em>The Hacker Factor Blog</em>, Sep. 2011. [Online]. Available: <a href="https://www.hackerfactor.com/blog/index.php?/archives/432-Looks-Like-It.html">https://www.hackerfactor.com/blog/index.php?/archives/432-Looks-Like-It.html</a></li>
+<li>[6] A. Babenko and V. Lempitsky, &quot;Additive quantization for extreme vector compression,&quot; in <em>Proc. IEEE Conf. Comput. Vis. Pattern Recognit. (CVPR)</em>, Columbus, OH, USA, 2014, pp. 931–938.</li>
+<li>[7] N. C. Cáceres, W. Hannibal, D. R. Freitas, E. L. Silva, C. Roman, and J. Casella, &quot;Mammal road mortality in a fragmented landscape in southwestern Brazil,&quot; <em>Mammalia</em>, vol. 76, no. 2, pp. 217–221, Jun. 2012.</li>
+<li>[8] S. S. A. Zaidi, M. S. Ansari, A. Aslam, N. Kanwal, M. Asghar, and B. Lee, &quot;A survey of modern deep learning-based object detection models,&quot; <em>Digital Signal Process.</em>, vol. 126, p. 103514, Jun. 2022.</li>
+<li>[9] World Health Organization (WHO), <em>Global Status Report on Road Safety 2023</em>, Geneva, Switzerland: World Health Organization, 2023.</li>
+<li>[10] R. Szeliski, <em>Computer Vision: Algorithms and Applications</em>, 2nd ed. Cham, Switzerland: Springer Nature, 2022.</li>
+<li>[11] Leaflet Team, &quot;Leaflet: An open-source JavaScript library for mobile-friendly interactive maps,&quot; 2024. [Online]. Available: <a href="https://leafletjs.com/">https://leafletjs.com/</a></li>
+<li>[12] MongoDB Inc., &quot;Geospatial queries and 2dsphere indexing in MongoDB v7.0,&quot; MongoDB Technical Documentation, 2024. [Online]. Available: <a href="https://www.mongodb.com/docs/manual/geospatial-queries/">https://www.mongodb.com/docs/manual/geospatial-queries/</a></li>
+<li>[13] W3C Geolocation Working Group, &quot;Geolocation API Specification 2nd Edition,&quot; W3C Recommendation, 2023. [Online]. Available: <a href="https://www.w3.org/TR/geolocation-API/">https://www.w3.org/TR/geolocation-API/</a></li>
+<li>[14] W3C WebRTC Working Group, &quot;Media Capture and Streams (MediaDevices API),&quot; W3C Recommendation, 2023. [Online]. Available: <a href="https://www.w3.org/TR/mediacapture-streams/">https://www.w3.org/TR/mediacapture-streams/</a></li>
+<li>[15] Socket.IO Community, &quot;Socket.IO: Bidirectional and low-latency communication for every platform,&quot; 2024. [Online]. Available: <a href="https://socket.io/">https://socket.io/</a></li>
+</ol>
+<hr>
+<hr>
+<h1>APPENDICES</h1>
+<h3>APPENDIX A: CORE SOURCE CODE EXCERPTS</h3>
+<h4>A.1 GeoDBSCAN Spatial Clustering Engine (<code>server/src/services/dbscanService.js</code>)</h4>
+<pre><code class="language-javascript">const { calculateDistance } = require(&#39;./geoService&#39;);
+
+class GeoDBSCAN {
+  constructor(points, epsilon = 450, minPts = 2) {
+    this.points = points;
+    this.epsilon = epsilon;
+    this.minPts = minPts;
+    this.visited = new Set();
+    this.clustered = new Set();
+    this.clusters = [];
+    this.noise = [];
+  }
+
+  regionQuery(pointIdx) {
+    const target = this.points[pointIdx];
+    const neighbors = [];
+    for (let i = 0; i &lt; this.points.length; i++) {
+      const p = this.points[i];
+      const dist = calculateDistance(
+        target.latitude, target.longitude,
+        p.latitude, p.longitude
+      );
+      if (dist &lt;= this.epsilon) {
+        neighbors.push(i);
+      }
+    }
+    return neighbors;
+  }
+
+  expandCluster(pointIdx, neighbors, currentCluster) {
+    currentCluster.push(this.points[pointIdx]);
+    this.clustered.add(pointIdx);
+    let queue = [...neighbors];
+
+    while (queue.length &gt; 0) {
+      const currentPointIdx = queue.shift();
+      if (!this.visited.has(currentPointIdx)) {
+        this.visited.add(currentPointIdx);
+        const currentNeighbors = this.regionQuery(currentPointIdx);
+        if (currentNeighbors.length &gt;= this.minPts) {
+          queue.push(...currentNeighbors.filter((idx) =&gt; !queue.includes(idx)));
+        }
+      }
+      if (!this.clustered.has(currentPointIdx)) {
+        currentCluster.push(this.points[currentPointIdx]);
+        this.clustered.add(currentPointIdx);
+      }
+    }
+  }
+
+  run() {
+    this.visited.clear();
+    this.clustered.clear();
+    this.clusters = [];
+    this.noise = [];
+
+    for (let i = 0; i &lt; this.points.length; i++) {
+      if (this.visited.has(i)) continue;
+      this.visited.add(i);
+      const neighbors = this.regionQuery(i);
+
+      if (neighbors.length &lt; this.minPts) {
+        this.noise.push(this.points[i]);
+      } else {
+        const newCluster = [];
+        this.expandCluster(i, neighbors, newCluster);
+        this.clusters.push(newCluster);
+      }
+    }
+    return {
+      clusters: this.clusters,
+      noise: this.noise,
+      clusterCount: this.clusters.length,
+      noiseCount: this.noise.length,
+    };
+  }
+}
+</code></pre>
+<hr>
+<h4>A.2 Real-Time Camera Proof Capture Component (<code>client/src/components/CameraProofCaptureModal.jsx</code>)</h4>
+<pre><code class="language-jsx">export default function CameraProofCaptureModal({ isOpen, onClose, onCapture, title, photoType }) {
+  const [stream, setStream] = useState(null);
+  const [gpsCoords, setGpsCoords] = useState(null);
+  const videoRef = useRef(null);
+
+  const startCamera = async () =&gt; {
+    const mediaStream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: &#39;environment&#39;, width: { ideal: 1280 }, height: { ideal: 720 } }
+    });
+    setStream(mediaStream);
+    videoRef.current.srcObject = mediaStream;
+  };
+
+  const capturePhoto = () =&gt; {
+    const canvas = document.createElement(&#39;canvas&#39;);
+    canvas.width = videoRef.current.videoWidth;
+    canvas.height = videoRef.current.videoHeight;
+    canvas.getContext(&#39;2d&#39;).drawImage(videoRef.current, 0, 0);
+    const dataUrl = canvas.toDataURL(&#39;image/jpeg&#39;, 0.9);
+    onCapture({
+      imageUrl: dataUrl,
+      photoType,
+      latitude: gpsCoords?.latitude,
+      longitude: gpsCoords?.longitude,
+      accuracy: gpsCoords?.accuracy
+    });
+    onClose();
+  };
+  return (/* Interactive Modal JSX */);
+}
+</code></pre>
+<hr>
+<h3>APPENDIX B: REST API SPECIFICATION &amp; WEBSOCKET EVENTS</h3>
+<table>
+<thead>
+<tr>
+<th align="left">Endpoint Route</th>
+<th align="center">HTTP Method</th>
+<th align="left">Access Level</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>/api/auth/login</code></td>
+<td align="center">POST</td>
+<td align="left">Public</td>
+<td align="left">Authenticates user; returns JWT token and role payload</td>
+</tr>
+<tr>
+<td align="left"><code>/api/reports</code></td>
+<td align="center">POST</td>
+<td align="left">Public/Citizen</td>
+<td align="left">Submits accident report with image, coordinates &amp; causes</td>
+</tr>
+<tr>
+<td align="left"><code>/api/reports/check-duplicate</code></td>
+<td align="center">POST</td>
+<td align="left">Public</td>
+<td align="left">Checks image perceptual hash &amp; spatial proximity</td>
+</tr>
+<tr>
+<td align="left"><code>/api/rescue</code></td>
+<td align="center">GET</td>
+<td align="left">NGO / Admin</td>
+<td align="left">Fetches active rescue triage requests</td>
+</tr>
+<tr>
+<td align="left"><code>/api/rescue/:id/status</code></td>
+<td align="center">PATCH</td>
+<td align="left">NGO / Volunteer</td>
+<td align="left">Updates case status (DISPATCHED, RESCUED, etc.)</td>
+</tr>
+<tr>
+<td align="left"><code>/api/hotspots</code></td>
+<td align="center">GET</td>
+<td align="left">All Roles</td>
+<td align="left">Retrieves DBSCAN spatial clusters and risk ratings</td>
+</tr>
+<tr>
+<td align="left"><code>/api/hotspots/recalculate</code></td>
+<td align="center">POST</td>
+<td align="left">Admin</td>
+<td align="left">Triggers real-time DBSCAN algorithm re-clustering</td>
+</tr>
+<tr>
+<td align="left"><code>/api/authority/actions</code></td>
+<td align="center">POST/GET</td>
+<td align="left">Authority</td>
+<td align="left">Manages road remediation actions and work orders</td>
+</tr>
+<tr>
+<td align="left"><code>/api/authority/actions/:id</code></td>
+<td align="center">PATCH</td>
+<td align="left">Authority</td>
+<td align="left">Uploads verified camera proof with GPS coordinates</td>
+</tr>
+<tr>
+<td align="left"><code>/api/authority/cause-analysis</code></td>
+<td align="center">GET</td>
+<td align="left">Authority/Admin</td>
+<td align="left">Fetches aggregated environmental cause statistics</td>
+</tr>
+<tr>
+<td align="left"><code>/api/notifications</code></td>
+<td align="center">GET</td>
+<td align="left">Authenticated</td>
+<td align="left">Retrieves targeted role-based civic notifications</td>
+</tr>
+<tr>
+<td align="left"><code>/api/notifications/:id/read</code></td>
+<td align="center">PATCH</td>
+<td align="left">Authenticated</td>
+<td align="left">Marks notification as read atomically</td>
+</tr>
+</tbody></table>
+<h4>Key WebSocket Event Channels:</h4>
+<ul>
+<li><code>report:new</code> — Broadcasts freshly registered accident reports to all connected NGO and Admin clients.</li>
+<li><code>rescue:update</code> — Emits status changes (ambulance dispatched, treatment started, rescued).</li>
+<li><code>hotspot:update</code> — Broadcasts newly formed or recomputed DBSCAN hotspot clusters.</li>
+<li><code>authority:action</code> — Broadcasts completed municipal infrastructure remediation.</li>
+</ul>
+<hr>
+<h3>APPENDIX C: HARDWARE &amp; SYSTEM REQUIREMENTS</h3>
+<pre><code>+-------------------------------------------------------------------------+
+|                    RECOMMENDED SYSTEM SPECIFICATIONS                    |
++--------------------------+----------------------------------------------+
+| Server CPU               | Quad-core 2.4 GHz (Intel i5/Xeon or AMD Ryzen|
+| Server Memory (RAM)      | 8 GB DDR4 minimum (16 GB recommended)        |
+| Persistent Storage       | 50 GB SSD storage                            |
+| Operating System         | Windows 10/11 64-bit or Ubuntu Linux 22.04 LTS|
+| Runtime Environment      | Node.js v18.x or v20.x LTS, npm v10.x        |
+| Client Device            | Any modern browser (Chrome, Firefox, Safari) |
+| Device Hardware Access   | GNSS/GPS Receiver, Integrated Webcam / Camera|
++--------------------------+----------------------------------------------+
+</code></pre>
+<hr>
+<p><em>End of Report Document</em></p>
+
+</body>
+</html>
