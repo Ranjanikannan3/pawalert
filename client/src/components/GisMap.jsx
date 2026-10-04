@@ -171,8 +171,8 @@ export default function GisMap({
   };
 
   const tileLayerUrls = {
-    streets: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
-    dark: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
+    streets: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+    city: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
     satellite: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
   };
 
@@ -227,7 +227,7 @@ export default function GisMap({
         </button>
         <button
           type="button"
-          onClick={() => setMapLayer('dark')}
+          onClick={() => setMapLayer('city')}
           style={{
             padding: '4px 8px',
             borderRadius: '6px',
@@ -235,11 +235,11 @@ export default function GisMap({
             fontSize: '0.725rem',
             fontWeight: 700,
             cursor: 'pointer',
-            background: mapLayer === 'dark' ? '#0d9488' : 'transparent',
-            color: mapLayer === 'dark' ? '#ffffff' : '#475569',
+            background: mapLayer === 'city' ? '#0d9488' : 'transparent',
+            color: mapLayer === 'city' ? '#ffffff' : '#475569',
           }}
         >
-          🌙 High Contrast
+          🏙️ City GIS
         </button>
         <button
           type="button"
@@ -269,7 +269,6 @@ export default function GisMap({
           key={mapLayer}
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url={tileLayerUrls[mapLayer]}
-          subdomains={mapLayer === 'streets' ? 'abc' : 'abcd'}
           maxZoom={19}
         />
 
