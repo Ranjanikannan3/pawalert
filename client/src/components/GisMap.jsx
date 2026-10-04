@@ -262,12 +262,15 @@ export default function GisMap({
       <MapContainer
         center={mapCenter}
         zoom={zoom}
-        style={{ width: '100%', height: '100%' }}
+        style={{ width: '100%', height: height || '500px', minHeight: '350px' }}
         scrollWheelZoom={true}
       >
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+          key={mapLayer}
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url={tileLayerUrls[mapLayer]}
+          subdomains={mapLayer === 'streets' ? 'abc' : 'abcd'}
+          maxZoom={19}
         />
 
         <RecenterController center={mapCenter} />

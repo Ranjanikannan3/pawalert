@@ -270,13 +270,23 @@ h1, h2, h3, h4, h5, h6 {
   transition: all 0.3s ease;
 }
 
-/* Leaflet Custom Hotspot Circles */
+/* Leaflet Custom Hotspot Circles & Container Reliability */
 .leaflet-container {
   font-family: var(--font-body);
-  width: 100%;
-  height: 100%;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 320px;
   border-radius: inherit;
   z-index: 1;
+  background-color: #f1f5f9;
+}
+
+.leaflet-tile-pane {
+  z-index: 200;
+}
+
+.leaflet-tile {
+  visibility: inherit !important;
 }
 
 .hotspot-radar-high {
