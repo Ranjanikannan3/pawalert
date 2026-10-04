@@ -239,18 +239,42 @@ export default function AdminDashboard() {
     } catch (e) {}
   };
 
-  const handleOpenCompleteModal = (action) => {
-    if (!action) return;
-    setActionToComplete(action);
-    setBeforeImageUrl(action.beforeImageUrl || action.reportId?.imageUrl || '');
+  const handleOpenCompleteModal = (target) => {
+    if (!target) return;
+    
+    // Check if target is a Report or an AuthorityAction
+    const isReport = Boolean(target.reportId && !target.actionType);
+    let actionObj = target;
+    
+    if (isReport) {
+      const existingAction = actions.find((a) => (a.reportId?._id || a.reportId) === target._id);
+      if (existingAction) {
+        actionObj = existingAction;
+      } else {
+        actionObj = {
+          isNewFromReport: true,
+          reportId: target,
+          actionType: `Remediate ${target.animalType || 'Animal'} Accident Hazard`,
+          problem: target.description || `Repeated animal accident hazard at ${target.address || 'location'}`,
+          possibleCause: (target.possibleCauses && target.possibleCauses[0]) || target.rootCause || 'Poor street lighting',
+          assignedDepartment: 'Municipal Road Safety & Infrastructure',
+          targetArea: target.address || 'Municipal road sector',
+          beforeImageUrl: target.imageUrl || '',
+          status: 'PENDING',
+        };
+      }
+    }
+
+    setActionToComplete(actionObj);
+    setBeforeImageUrl(actionObj.beforeImageUrl || actionObj.reportId?.imageUrl || '');
     setBeforeImageFile(null);
     setSolvedImageFile(null);
-    setSolvedImageUrl(action.solvedImageUrl || '');
-    setSolvedLatitude(action.solvedLatitude || action.reportId?.latitude || 8.7138);
-    setSolvedLongitude(action.solvedLongitude || action.reportId?.longitude || 77.7568);
-    setSolvedGpsAccuracy(action.solvedGpsAccuracy || 10);
-    setSolvedAddress(action.solvedAddress || action.targetArea || action.reportId?.address || 'South Bypass Highway');
-    setSolvedNotes(action.solvedNotes || '');
+    setSolvedImageUrl(actionObj.solvedImageUrl || '');
+    setSolvedLatitude(actionObj.solvedLatitude || actionObj.reportId?.latitude || 8.7138);
+    setSolvedLongitude(actionObj.solvedLongitude || actionObj.reportId?.longitude || 77.7568);
+    setSolvedGpsAccuracy(actionObj.solvedGpsAccuracy || 10);
+    setSolvedAddress(actionObj.solvedAddress || actionObj.targetArea || actionObj.reportId?.address || 'Municipal road sector');
+    setSolvedNotes(actionObj.solvedNotes || '');
     setShowCompleteModal(true);
   };
 
@@ -330,32 +354,73 @@ export default function AdminDashboard() {
 
     setCompletingAction(true);
     try {
-      let payload;
-      if (solvedImageFile) {
-        payload = new FormData();
-        payload.append('status', 'COMPLETED');
-        payload.append('image', solvedImageFile);
-        if (beforeImageUrl) payload.append('beforeImageUrl', beforeImageUrl);
-        if (solvedLatitude) payload.append('solvedLatitude', solvedLatitude);
-        if (solvedLongitude) payload.append('solvedLongitude', solvedLongitude);
-        if (solvedGpsAccuracy) payload.append('solvedGpsAccuracy', solvedGpsAccuracy);
-        if (solvedAddress) payload.append('solvedAddress', solvedAddress);
-        payload.append('solvedNotes', solvedNotes || 'Remediation completed and verified with camera snapshot and live GPS.');
+      let res;
+      if (actionToComplete.isNewFromReport) {
+        const reportTarget = actionToComplete.reportId;
+        if (solvedImageFile) {
+          const payload = new FormData();
+          payload.append('reportId', reportTarget._id || reportTarget);
+          payload.append('actionType', actionToComplete.actionType || 'Remediate Accident Zone');
+          payload.append('problem', actionToComplete.problem || 'Animal accident hazard');
+          payload.append('possibleCause', actionToComplete.possibleCause || 'Poor street lighting');
+          payload.append('assignedDepartment', actionToComplete.assignedDepartment || 'Municipal Infrastructure & Safety');
+          payload.append('targetArea', solvedAddress || reportTarget.address || 'Municipal Road Sector');
+          payload.append('status', 'COMPLETED');
+          payload.append('image', solvedImageFile);
+          if (beforeImageUrl) payload.append('beforeImageUrl', beforeImageUrl);
+          if (solvedLatitude) payload.append('solvedLatitude', solvedLatitude);
+          if (solvedLongitude) payload.append('solvedLongitude', solvedLongitude);
+          if (solvedGpsAccuracy) payload.append('solvedGpsAccuracy', solvedGpsAccuracy);
+          if (solvedAddress) payload.append('solvedAddress', solvedAddress);
+          payload.append('solvedNotes', solvedNotes || 'Verified infrastructure remediation photo proof attached with live GPS.');
+          res = await api.createAuthorityAction(payload);
+        } else {
+          const payload = {
+            reportId: reportTarget._id || reportTarget,
+            actionType: actionToComplete.actionType || 'Remediate Accident Zone',
+            problem: actionToComplete.problem || 'Animal accident hazard',
+            possibleCause: actionToComplete.possibleCause || 'Poor street lighting',
+            assignedDepartment: actionToComplete.assignedDepartment || 'Municipal Infrastructure & Safety',
+            targetArea: solvedAddress || reportTarget.address || 'Municipal Road Sector',
+            status: 'COMPLETED',
+            solvedImageUrl: solvedImageUrl,
+            beforeImageUrl: beforeImageUrl || reportTarget.imageUrl || '',
+            solvedLatitude: solvedLatitude || reportTarget.latitude || 8.7138,
+            solvedLongitude: solvedLongitude || reportTarget.longitude || 77.7568,
+            solvedGpsAccuracy: solvedGpsAccuracy || 10,
+            solvedAddress: solvedAddress || reportTarget.address || 'Municipal Road Sector',
+            solvedNotes: solvedNotes || 'Verified infrastructure remediation photo proof attached with live GPS.',
+          };
+          res = await api.createAuthorityAction(payload);
+        }
       } else {
-        payload = {
-          status: 'COMPLETED',
-          solvedImageUrl: solvedImageUrl,
-          beforeImageUrl: beforeImageUrl || actionToComplete.beforeImageUrl || actionToComplete.reportId?.imageUrl || '',
-          solvedLatitude: solvedLatitude || actionToComplete.reportId?.latitude || 8.7138,
-          solvedLongitude: solvedLongitude || actionToComplete.reportId?.longitude || 77.7568,
-          solvedGpsAccuracy: solvedGpsAccuracy || 10,
-          solvedAddress: solvedAddress || actionToComplete.targetArea || 'Municipal Sector',
-          solvedNotes: solvedNotes || 'Remediation completed and verified with camera snapshot and live GPS.',
-        };
+        let payload;
+        if (solvedImageFile) {
+          payload = new FormData();
+          payload.append('status', 'COMPLETED');
+          payload.append('image', solvedImageFile);
+          if (beforeImageUrl) payload.append('beforeImageUrl', beforeImageUrl);
+          if (solvedLatitude) payload.append('solvedLatitude', solvedLatitude);
+          if (solvedLongitude) payload.append('solvedLongitude', solvedLongitude);
+          if (solvedGpsAccuracy) payload.append('solvedGpsAccuracy', solvedGpsAccuracy);
+          if (solvedAddress) payload.append('solvedAddress', solvedAddress);
+          payload.append('solvedNotes', solvedNotes || 'Remediation completed and verified with camera snapshot and live GPS.');
+        } else {
+          payload = {
+            status: 'COMPLETED',
+            solvedImageUrl: solvedImageUrl,
+            beforeImageUrl: beforeImageUrl || actionToComplete.beforeImageUrl || actionToComplete.reportId?.imageUrl || '',
+            solvedLatitude: solvedLatitude || actionToComplete.reportId?.latitude || 8.7138,
+            solvedLongitude: solvedLongitude || actionToComplete.reportId?.longitude || 77.7568,
+            solvedGpsAccuracy: solvedGpsAccuracy || 10,
+            solvedAddress: solvedAddress || actionToComplete.targetArea || 'Municipal Sector',
+            solvedNotes: solvedNotes || 'Remediation completed and verified with camera snapshot and live GPS.',
+          };
+        }
+        res = await api.updateAuthorityAction(actionToComplete._id, payload);
       }
 
-      const res = await api.updateAuthorityAction(actionToComplete._id, payload);
-      if (res.success) {
+      if (res?.success) {
         setShowCompleteModal(false);
         loadAdminData();
       }
@@ -785,13 +850,22 @@ export default function AdminDashboard() {
                 )}
               </div>
 
-              <button
-                onClick={() => setSelectedAuditReport(r)}
-                className="btn btn-sm btn-primary"
-                style={{ background: '#d97706', marginTop: '0.85rem', width: '100%', justifyContent: 'center' }}
-              >
-                <Eye size={13} /> Full-Lifecycle Case Audit
-              </button>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', marginTop: '0.85rem' }}>
+                <button
+                  onClick={() => setSelectedAuditReport(r)}
+                  className="btn btn-sm btn-secondary"
+                  style={{ width: '100%', justifyContent: 'center', fontSize: '0.75rem' }}
+                >
+                  <Eye size={13} /> Case Audit
+                </button>
+                <button
+                  onClick={() => handleOpenCompleteModal(r)}
+                  className="btn btn-sm btn-primary"
+                  style={{ background: '#0d9488', borderColor: '#0d9488', width: '100%', justifyContent: 'center', fontSize: '0.75rem', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+                >
+                  <Camera size={13} /> Attach Proof
+                </button>
+              </div>
             </div>
           );
 
@@ -1174,7 +1248,7 @@ export default function AdminDashboard() {
 
         {/* ================= SECTION 7: PROOFS (Before & After Gallery with Live GPS) ================= */}
         {activeSection === 'proofs' && (() => {
-          const proofActions = actions.filter((a) => a.solvedImageUrl || a.status === 'COMPLETED');
+          const proofActions = actions.filter((a) => a.solvedImageUrl && (a.status === 'COMPLETED' || a.solvedImageUrl.length > 5));
           return (
             <div className="card" style={{ padding: '1.5rem', borderRadius: '16px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.25rem', flexWrap: 'wrap', gap: '0.5rem' }}>
@@ -1190,12 +1264,12 @@ export default function AdminDashboard() {
                   <span className="badge badge-teal">
                     {proofActions.length} VERIFIED ACTIONS
                   </span>
-                  {actions.length > 0 && (
+                  {(actions.length > 0 || reports.length > 0) && (
                     <button
                       type="button"
                       className="btn btn-primary btn-sm"
                       style={{ background: '#0d9488', borderColor: '#0d9488', fontWeight: 800, display: 'inline-flex', alignItems: 'center', gap: '5px' }}
-                      onClick={() => handleOpenCompleteModal(proofActions[0] || actions[0])}
+                      onClick={() => handleOpenCompleteModal(proofActions[0] || actions[0] || reports[0])}
                     >
                       <Camera size={14} /> 📸 Attach Resolution Proof
                     </button>
@@ -1206,30 +1280,34 @@ export default function AdminDashboard() {
               {proofActions.length === 0 ? (
                 <div style={{ padding: '3.5rem 1.5rem', textAlign: 'center', background: '#f8fafc', borderRadius: '12px', border: '1px solid #e2e8f0', marginTop: '1rem' }}>
                   <ShieldCheck size={38} color="#94a3b8" style={{ margin: '0 auto 0.75rem' }} />
-                  <h4 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#334155' }}>No completed remediation actions yet.</h4>
-                  <p style={{ fontSize: '0.825rem', color: '#64748b', maxWidth: '420px', margin: '0.25rem auto 1.25rem' }}>
-                    When authorities execute actions and upload verified Before & After camera photos with live GPS coordinates, they will be archived here for civic auditing.
+                  <h4 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#334155' }}>No verified resolution proofs yet.</h4>
+                  <p style={{ fontSize: '0.825rem', color: '#64748b', maxWidth: '440px', margin: '0.25rem auto 1.25rem' }}>
+                    When authorities or admins remediate citizen-reported accident locations and attach Before & After photo proof with live GPS, verified records will be archived here.
                   </p>
-                  {actions.length > 0 && (
+                  {(reports.length > 0 || actions.length > 0) ? (
                     <button
                       type="button"
                       className="btn btn-primary"
                       style={{ background: '#0d9488', borderColor: '#0d9488', fontWeight: 800, display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}
-                      onClick={() => handleOpenCompleteModal(actions[0])}
+                      onClick={() => handleOpenCompleteModal(actions[0] || reports[0])}
                     >
-                      <Camera size={16} /> 📸 Attach Camera / File Proof (with GPS) Now
+                      <Camera size={16} /> 📸 Attach Resolution Proof for a Report Now
                     </button>
+                  ) : (
+                    <div style={{ fontSize: '0.8rem', color: '#94a3b8', fontStyle: 'italic' }}>
+                      Citizen accident reports submitted via the portal will appear here for remediation.
+                    </div>
                   )}
                 </div>
               ) : (
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(420px, 1fr))', gap: '1.25rem', marginTop: '1rem' }}>
                   {proofActions.map((act) => {
-                    const beforeImg = act.beforeImageUrl || act.reportId?.imageUrl || '/uploads/sample-dog.jpg';
-                    const afterImg = act.solvedImageUrl || '/uploads/solved-lighting.jpg';
+                    const beforeImg = act.beforeImageUrl || act.reportId?.imageUrl;
+                    const afterImg = act.solvedImageUrl;
                     const lat = act.solvedLatitude || act.reportId?.latitude;
                     const lng = act.solvedLongitude || act.reportId?.longitude;
                     const acc = act.solvedGpsAccuracy;
-                    const addr = act.solvedAddress || act.targetArea || 'Municipal road sector';
+                    const addr = act.solvedAddress || act.targetArea || act.reportId?.address || 'Municipal road sector';
 
                     return (
                       <div
@@ -1247,7 +1325,9 @@ export default function AdminDashboard() {
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
                           <div>
                             <strong style={{ fontSize: '1rem', color: '#0f172a' }}>{act.actionType}</strong>
-                            <div style={{ fontSize: '0.725rem', color: '#64748b' }}>Dept: {act.assignedDepartment}</div>
+                            <div style={{ fontSize: '0.725rem', color: '#64748b' }}>
+                              Dept: {act.assignedDepartment} {act.reportId?.reportId ? `• Case: ${act.reportId.reportId}` : ''}
+                            </div>
                           </div>
                           <span className="badge badge-teal" style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
                             <CheckCircle2 size={13} /> VERIFIED PROOF
@@ -1264,22 +1344,36 @@ export default function AdminDashboard() {
                             <div style={{ fontSize: '0.7rem', fontWeight: 800, color: '#ef4444', marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '3px' }}>
                               <AlertTriangle size={13} /> BEFORE (Hazard)
                             </div>
-                            <img
-                              src={beforeImg}
-                              alt="Before Proof"
-                              style={{ width: '100%', height: '140px', objectFit: 'cover', borderRadius: '6px' }}
-                            />
+                            {beforeImg ? (
+                              <img
+                                src={beforeImg}
+                                alt="Before Proof"
+                                style={{ width: '100%', height: '140px', objectFit: 'cover', borderRadius: '6px' }}
+                              />
+                            ) : (
+                              <div style={{ height: '140px', background: '#f8fafc', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', borderRadius: '6px', color: '#94a3b8', fontSize: '0.75rem', gap: '4px', border: '1px dashed #cbd5e1' }}>
+                                <AlertTriangle size={18} color="#f87171" />
+                                <span>No original hazard photo</span>
+                              </div>
+                            )}
                           </div>
 
                           <div style={{ background: '#ffffff', padding: '0.65rem', borderRadius: '8px', border: '1px solid #bbf7d0' }}>
                             <div style={{ fontSize: '0.7rem', fontWeight: 800, color: '#16a34a', marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '3px' }}>
                               <CheckCircle2 size={13} /> AFTER (Solved Camera)
                             </div>
-                            <img
-                              src={afterImg}
-                              alt="After Solved Proof"
-                              style={{ width: '100%', height: '140px', objectFit: 'cover', borderRadius: '6px' }}
-                            />
+                            {afterImg ? (
+                              <img
+                                src={afterImg}
+                                alt="After Solved Proof"
+                                style={{ width: '100%', height: '140px', objectFit: 'cover', borderRadius: '6px' }}
+                              />
+                            ) : (
+                              <div style={{ height: '140px', background: '#f8fafc', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', borderRadius: '6px', color: '#94a3b8', fontSize: '0.75rem', gap: '4px', border: '1px dashed #cbd5e1' }}>
+                                <Camera size={18} color="#10b981" />
+                                <span>Proof Pending</span>
+                              </div>
+                            )}
                           </div>
                         </div>
 
@@ -1528,19 +1622,39 @@ export default function AdminDashboard() {
                   <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#16a34a', marginBottom: '2px' }}>
                     5. AUTHORITY REMEDIATION & RESOLUTION PROOF
                   </div>
-                  <div style={{ fontSize: '0.8rem', color: '#15803d' }}>
+                  <div style={{ fontSize: '0.8rem', color: '#15803d', marginBottom: '4px' }}>
                     Remediation Status: <strong>{selectedAuditReport.remediationStatus || 'PENDING'}</strong>
                   </div>
-                  {selectedAuditReport.imageUrl && (
+                  {selectedAuditReport.remediationActionId?.solvedImageUrl ? (
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginTop: '0.5rem' }}>
                       <div>
                         <span style={{ fontSize: '0.675rem', fontWeight: 700, color: '#ef4444' }}>Before (Incident):</span>
-                        <img src={selectedAuditReport.imageUrl} alt="Before" style={{ width: '100%', height: '110px', objectFit: 'cover', borderRadius: '6px' }} />
+                        {selectedAuditReport.imageUrl ? (
+                          <img src={selectedAuditReport.imageUrl} alt="Before" style={{ width: '100%', height: '110px', objectFit: 'cover', borderRadius: '6px' }} />
+                        ) : (
+                          <div style={{ height: '110px', background: '#ffffff', borderRadius: '6px', border: '1px dashed #cbd5e1', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94a3b8', fontSize: '0.7rem' }}>No photo</div>
+                        )}
                       </div>
                       <div>
                         <span style={{ fontSize: '0.675rem', fontWeight: 700, color: '#16a34a' }}>After (Solved Proof):</span>
-                        <img src="/uploads/solved-lighting.jpg" alt="After" style={{ width: '100%', height: '110px', objectFit: 'cover', borderRadius: '6px' }} />
+                        <img src={selectedAuditReport.remediationActionId.solvedImageUrl} alt="After" style={{ width: '100%', height: '110px', objectFit: 'cover', borderRadius: '6px' }} />
                       </div>
+                    </div>
+                  ) : (
+                    <div style={{ background: '#ffffff', padding: '0.75rem', borderRadius: '6px', border: '1px dashed #86efac', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '6px' }}>
+                      <span style={{ fontSize: '0.725rem', color: '#64748b' }}>No resolution photo proof attached yet.</span>
+                      <button
+                        type="button"
+                        className="btn btn-sm btn-primary"
+                        style={{ fontSize: '0.7rem', background: '#0d9488', borderColor: '#0d9488', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+                        onClick={() => {
+                          const target = selectedAuditReport;
+                          setSelectedAuditReport(null);
+                          handleOpenCompleteModal(target);
+                        }}
+                      >
+                        <Camera size={12} /> Attach Proof Now
+                      </button>
                     </div>
                   )}
                 </div>
@@ -1628,23 +1742,46 @@ export default function AdminDashboard() {
                     Sector: <strong>{actionToComplete.targetArea || 'Municipal Sector'}</strong> • Dept: {actionToComplete.assignedDepartment}
                   </div>
 
-                  {/* Switch target action if multiple exist */}
-                  {actions.length > 1 && (
+                  {/* Target selector: citizen reports or actions */}
+                  {(reports.length > 0 || actions.length > 0) && (
                     <div style={{ marginTop: '4px' }}>
-                      <label style={{ fontSize: '0.7rem', color: '#64748b', fontWeight: 700 }}>Switch Target Action:</label>
+                      <label style={{ fontSize: '0.725rem', color: '#475569', fontWeight: 700, display: 'block', marginBottom: '2px' }}>
+                        Select Reported Incident or Action:
+                      </label>
                       <select
-                        value={actionToComplete._id}
+                        value={actionToComplete._id || (actionToComplete.reportId?._id || actionToComplete.reportId) || ''}
                         onChange={(e) => {
-                          const target = actions.find((a) => a._id === e.target.value);
-                          if (target) handleOpenCompleteModal(target);
+                          const val = e.target.value;
+                          const matchReport = reports.find((r) => r._id === val);
+                          if (matchReport) {
+                            handleOpenCompleteModal(matchReport);
+                            return;
+                          }
+                          const matchAction = actions.find((a) => a._id === val);
+                          if (matchAction) {
+                            handleOpenCompleteModal(matchAction);
+                          }
                         }}
-                        style={{ width: '100%', padding: '0.35rem 0.5rem', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '0.75rem', marginTop: '2px' }}
+                        style={{ width: '100%', padding: '0.45rem 0.5rem', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '0.8rem', marginTop: '2px', background: '#ffffff' }}
                       >
-                        {actions.map((a) => (
-                          <option key={a._id} value={a._id}>
-                            {a.actionType} — {a.targetArea || 'Municipal'} ({a.status})
-                          </option>
-                        ))}
+                        {reports.length > 0 && (
+                          <optgroup label="Citizen Accident Reports">
+                            {reports.map((r) => (
+                              <option key={r._id} value={r._id}>
+                                {getAnimalEmoji(r.animalType)} {r.reportId} — {r.address} ({r.status})
+                              </option>
+                            ))}
+                          </optgroup>
+                        )}
+                        {actions.length > 0 && (
+                          <optgroup label="Authority Remediation Actions">
+                            {actions.map((a) => (
+                              <option key={a._id} value={a._id}>
+                                🛠️ {a.actionType} — {a.targetArea || 'Municipal Sector'} ({a.status})
+                              </option>
+                            ))}
+                          </optgroup>
+                        )}
                       </select>
                     </div>
                   )}
@@ -1654,7 +1791,7 @@ export default function AdminDashboard() {
                 <div style={{ background: '#fff5f5', padding: '1rem', borderRadius: '12px', border: '1px solid #fecaca' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
                     <div style={{ fontWeight: 800, fontSize: '0.85rem', color: '#b91c1c', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                      <AlertTriangle size={16} /> 1. BEFORE PHOTO (Hazard State)
+                      <AlertTriangle size={16} /> 1. BEFORE PHOTO (Citizen Incident / Hazard)
                     </div>
                     <button
                       type="button"
@@ -1674,8 +1811,8 @@ export default function AdminDashboard() {
                         style={{ width: '100px', height: '70px', objectFit: 'cover', borderRadius: '8px', border: '1px solid #f87171' }}
                       />
                       <div style={{ fontSize: '0.75rem', color: '#991b1b', flex: 1 }}>
-                        <div style={{ fontWeight: 700 }}>✓ Before Proof Attached</div>
-                        <div style={{ fontSize: '0.7rem', opacity: 0.9 }}>Visible in civic audit archive as the hazard baseline.</div>
+                        <div style={{ fontWeight: 700 }}>✓ Incident Photo Attached from Citizen Report</div>
+                        <div style={{ fontSize: '0.7rem', opacity: 0.9 }}>Serves as the verifiable baseline for civic remediation.</div>
                       </div>
                     </div>
                   ) : (
@@ -1691,13 +1828,6 @@ export default function AdminDashboard() {
                       onChange={handleBeforeImageUpload}
                       style={{ flex: 1, fontSize: '0.75rem' }}
                     />
-                    <button
-                      type="button"
-                      onClick={() => setBeforeImageUrl('/uploads/sample-dog.jpg')}
-                      style={{ fontSize: '0.675rem', padding: '3px 8px', borderRadius: '4px', background: '#ffffff', border: '1px solid #f87171', color: '#b91c1c', cursor: 'pointer', fontWeight: 600 }}
-                    >
-                      Use Incident Photo
-                    </button>
                   </div>
                 </div>
 
@@ -1735,7 +1865,7 @@ export default function AdminDashboard() {
                     </div>
                   ) : (
                     <div style={{ fontSize: '0.75rem', color: '#166534', marginBottom: '0.5rem' }}>
-                      Snap on-site with live camera above, or upload photo file from device:
+                      Capture on-site with live camera above, or upload photo file from device:
                     </div>
                   )}
 
@@ -1743,38 +1873,8 @@ export default function AdminDashboard() {
                     type="file"
                     accept="image/*"
                     onChange={handleSolvedImageUpload}
-                    style={{ width: '100%', fontSize: '0.75rem', marginBottom: '0.5rem' }}
+                    style={{ width: '100%', fontSize: '0.75rem' }}
                   />
-
-                  {/* Preset quick proofs */}
-                  <div style={{ display: 'flex', gap: '0.35rem', flexWrap: 'wrap' }}>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setSolvedImageUrl('/uploads/solved-lighting.jpg');
-                        setSolvedLatitude(actionToComplete.reportId?.latitude || 8.7138);
-                        setSolvedLongitude(actionToComplete.reportId?.longitude || 77.7568);
-                        setSolvedGpsAccuracy(10);
-                        setSolvedAddress(actionToComplete.targetArea || 'South Bypass Highway Sector');
-                      }}
-                      style={{ fontSize: '0.675rem', padding: '3px 8px', borderRadius: '4px', background: '#ffffff', border: '1px solid #86efac', cursor: 'pointer', color: '#166534', fontWeight: 600 }}
-                    >
-                      Preset: Solar Lighting Fixed
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setSolvedImageUrl('/uploads/solved-speedbreaker.jpg');
-                        setSolvedLatitude(actionToComplete.reportId?.latitude || 8.7138);
-                        setSolvedLongitude(actionToComplete.reportId?.longitude || 77.7568);
-                        setSolvedGpsAccuracy(8);
-                        setSolvedAddress(actionToComplete.targetArea || 'South Bypass Highway Sector');
-                      }}
-                      style={{ fontSize: '0.675rem', padding: '3px 8px', borderRadius: '4px', background: '#ffffff', border: '1px solid #86efac', cursor: 'pointer', color: '#166534', fontWeight: 600 }}
-                    >
-                      Preset: Road Remediation Fixed
-                    </button>
-                  </div>
                 </div>
 
                 {/* 3. LIVE GPS GEOTAG STATUS */}

@@ -4,11 +4,11 @@ let socket = null;
 
 export function getSocket() {
   if (!socket) {
-    // In dev, connect directly to backend port 5000 or fallback to origin
+    // In dev or if custom backend URL provided, connect to backend; otherwise fallback to origin
     const isDev = window.location.port && window.location.port !== '5000';
-    const socketUrl = isDev
-      ? `${window.location.protocol}//${window.location.hostname}:5000`
-      : window.location.origin;
+    const socketUrl = import.meta.env.VITE_API_URL
+      ? import.meta.env.VITE_API_URL.replace(/\/$/, '')
+      : (isDev ? `${window.location.protocol}//${window.location.hostname}:5000` : window.location.origin);
 
     socket = io(socketUrl, {
       transports: ['websocket', 'polling'],

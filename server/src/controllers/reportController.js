@@ -21,6 +21,15 @@ const checkDuplicate = async (req, res, next) => {
       originalFilename = req.file.originalname;
     }
 
+    let clientFingerprint = null;
+    if (req.body.clientFingerprint) {
+      try {
+        clientFingerprint = typeof req.body.clientFingerprint === 'string'
+          ? JSON.parse(req.body.clientFingerprint)
+          : req.body.clientFingerprint;
+      } catch (e) {}
+    }
+
     const duplicateCheck = await checkForDuplicateReport(
       latitude ? parseFloat(latitude) : null,
       longitude ? parseFloat(longitude) : null,
@@ -30,6 +39,7 @@ const checkDuplicate = async (req, res, next) => {
         fileBuffer,
         originalFilename,
         imageUrl: imageUrl || '',
+        clientFingerprint,
       }
     );
 
@@ -73,6 +83,15 @@ const createReport = async (req, res, next) => {
     const isDemoUser = req.user ? Boolean(req.user.isDemoAccount) : false;
     const shouldBypass = bypassDuplicateCheck === true || bypassDuplicateCheck === 'true';
 
+    let clientFingerprint = null;
+    if (req.body.clientFingerprint) {
+      try {
+        clientFingerprint = typeof req.body.clientFingerprint === 'string'
+          ? JSON.parse(req.body.clientFingerprint)
+          : req.body.clientFingerprint;
+      } catch (e) {}
+    }
+
     // 1. Handle image & compute visual fingerprint
     let fileBuffer = null;
     let imageUrl = '/uploads/sample-dog.jpg';
@@ -88,7 +107,8 @@ const createReport = async (req, res, next) => {
     const imageFingerprint = computeImageFingerprint(
       fileBuffer,
       req.file ? req.file.originalname : '',
-      imageUrl
+      imageUrl,
+      clientFingerprint
     );
 
     // 1b. Validate image gatekeeper: reject human or non-animal photo
@@ -98,6 +118,7 @@ const createReport = async (req, res, next) => {
         imageUrl,
         isHuman: req.body.isHuman === true || req.body.isHuman === 'true',
         detectedType: req.body.detectedType,
+        clientFingerprint,
       });
 
       if (aiGateCheck.isAnimal === false) {
@@ -124,6 +145,7 @@ const createReport = async (req, res, next) => {
           fileBuffer,
           originalFilename: req.file ? req.file.originalname : '',
           imageUrl,
+          clientFingerprint,
         }
       );
 
@@ -188,7 +210,7 @@ const createReport = async (req, res, next) => {
       duplicateConfidence,
       imageHash: JSON.stringify(imageFingerprint),
       remediationStatus: 'PENDING',
-      isDemo: isDemoUser,
+      isDemo: false,
     });
 
     // 6. Update linked Rescue Request or link to existing rescue
@@ -217,7 +239,7 @@ const createReport = async (req, res, next) => {
       ngoName: 'Central Rescue Operations',
       priority: isReportDuplicate ? 'Low' : severity === 'Critical' ? 'Critical' : severity === 'Moderate' ? 'High' : 'Medium',
       status: isReportDuplicate ? 'CANCELLED' : 'PENDING',
-      isDemo: isDemoUser,
+      isDemo: false,
       statusHistory: [
         {
           status: isReportDuplicate ? 'CANCELLED' : 'PENDING',

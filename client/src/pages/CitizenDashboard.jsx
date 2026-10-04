@@ -321,6 +321,7 @@ export default function CitizenDashboard() {
       userCorrectedAnimal: '',
       imageUrl: result.imageUrl,
       rawFile: result.rawFile,
+      clientFingerprint: result.clientFingerprint || null,
     }));
   };
 
@@ -439,6 +440,9 @@ export default function CitizenDashboard() {
 
       if (formData.rawFile) {
         submitPayload.append('image', formData.rawFile);
+      }
+      if (formData.clientFingerprint) {
+        submitPayload.append('clientFingerprint', JSON.stringify(formData.clientFingerprint));
       }
       if (bypassDuplicate) {
         submitPayload.append('bypassDuplicateCheck', 'true');
@@ -818,7 +822,14 @@ export default function CitizenDashboard() {
                 {/* STEP 1: Photo & AI Classification with Edit/Correction */}
                 {step === 1 && (
                   <div>
-                    <AiClassifierModal onAnalysisComplete={handleAiComplete} selectedImage={formData.imageUrl} />
+                    <AiClassifierModal
+                      onAnalysisComplete={handleAiComplete}
+                      selectedImage={formData.imageUrl}
+                      onViewExistingCase={(rep) => {
+                        setSelectedReportDetail(rep);
+                        setActiveSection('reports');
+                      }}
+                    />
 
                     {/* Prominent Duplicate Alert Box in Step 1 */}
                     {duplicateWarning && (
@@ -1334,7 +1345,66 @@ export default function CitizenDashboard() {
             <p style={{ fontSize: '0.85rem', color: '#64748b', marginBottom: '1.5rem' }}>
               Upload evidence, confirm AI species classification, and report contributing hazard factors.
             </p>
-            <AiClassifierModal onAnalysisComplete={handleAiComplete} selectedImage={formData.imageUrl} />
+            <AiClassifierModal
+              onAnalysisComplete={handleAiComplete}
+              selectedImage={formData.imageUrl}
+              onViewExistingCase={(rep) => {
+                setSelectedReportDetail(rep);
+                setActiveSection('reports');
+              }}
+            />
+
+            {/* Prominent Duplicate Alert Box in Report Accident View */}
+            {duplicateWarning && (
+              <div
+                style={{
+                  marginTop: '1.25rem',
+                  padding: '1.15rem 1.25rem',
+                  borderRadius: '12px',
+                  background: 'linear-gradient(135deg, #fffbeb, #fef3c7)',
+                  border: '2px solid #f59e0b',
+                  boxShadow: '0 4px 14px rgba(245, 158, 11, 0.15)',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.4rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#b45309', fontWeight: 900, fontSize: '1rem' }}>
+                    <AlertTriangle size={20} color="#d97706" />
+                    <span>⚠️ It is a Duplicate Report!</span>
+                  </div>
+                  <span className="badge badge-duplicate" style={{ background: '#d97706', color: '#ffffff', fontWeight: 800 }}>
+                    DUPLICATE ({Math.round((duplicateWarning.similarityScore || 1) * 100)}% Match)
+                  </span>
+                </div>
+                <p style={{ margin: '0 0 0.75rem 0', fontSize: '0.825rem', color: '#92400e', lineHeight: 1.4, fontWeight: 600 }}>
+                  You uploaded the same photo as previous report <strong>{duplicateWarning.existingReport?.reportId}</strong> ({duplicateWarning.existingReport?.address || 'Incident Location'}). An active incident report already exists for this case.
+                </p>
+                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedReportDetail(duplicateWarning.existingReport);
+                      setActiveSection('reports');
+                    }}
+                    className="btn btn-sm btn-secondary"
+                    style={{ fontWeight: 700 }}
+                  >
+                    🔍 View Existing Case ({duplicateWarning.existingReport?.reportId})
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setStep(4);
+                      setActiveSection('overview');
+                    }}
+                    className="btn btn-sm btn-primary"
+                    style={{ background: '#0d9488', borderColor: '#0d9488', fontWeight: 700 }}
+                  >
+                    🔗 Link as Duplicate Case →
+                  </button>
+                </div>
+              </div>
+            )}
+
             <div style={{ marginTop: '1.5rem', display: 'flex', justifyContent: 'space-between' }}>
               <button onClick={() => setActiveSection('overview')} className="btn btn-secondary">
                 Return to Dashboard
@@ -1935,7 +2005,7 @@ export default function CitizenDashboard() {
               )}
 
               {/* BEFORE & AFTER PROOF VISUALIZATION */}
-              {selectedReportDetail.remediationActionId?.solvedImageUrl || selectedReportDetail.remediationStatus === 'COMPLETED' ? (
+              {selectedReportDetail.remediationActionId?.solvedImageUrl ? (
                 <div style={{ marginBottom: '1.25rem', background: '#f8fafc', borderRadius: '12px', padding: '1rem', border: '1px solid #e2e8f0' }}>
                   <div style={{ fontSize: '0.85rem', fontWeight: 800, color: '#0f172a', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                     <CheckCircle2 size={18} color="#16a34a" /> Case Resolution Proof (Before & After)
@@ -1956,10 +2026,7 @@ export default function CitizenDashboard() {
                         🟢 After (Authority Solved Proof)
                       </div>
                       <img
-                        src={
-                          selectedReportDetail.remediationActionId?.solvedImageUrl ||
-                          'https://images.unsplash.com/photo-1577495508048-b635879837f1?w=600&auto=format&fit=crop&q=80'
-                        }
+                        src={selectedReportDetail.remediationActionId.solvedImageUrl}
                         alt="After Solved"
                         style={{ width: '100%', height: '140px', objectFit: 'cover', borderRadius: '8px', border: '1px solid #86efac' }}
                       />

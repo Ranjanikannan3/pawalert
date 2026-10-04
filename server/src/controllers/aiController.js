@@ -21,6 +21,15 @@ const analyzeAnimal = async (req, res, next) => {
       originalName = `${req.body.sampleType}.jpg`;
     }
 
+    let clientFingerprint = null;
+    if (req.body.clientFingerprint) {
+      try {
+        clientFingerprint = typeof req.body.clientFingerprint === 'string'
+          ? JSON.parse(req.body.clientFingerprint)
+          : req.body.clientFingerprint;
+      } catch (e) {}
+    }
+
     const options = {
       latitude: req.body.latitude ? parseFloat(req.body.latitude) : null,
       longitude: req.body.longitude ? parseFloat(req.body.longitude) : null,
@@ -31,6 +40,7 @@ const analyzeAnimal = async (req, res, next) => {
       isAnimal: req.body.isAnimal !== undefined ? (req.body.isAnimal === true || req.body.isAnimal === 'true') : true,
       detectedType: req.body.detectedType || (req.body.sampleType && req.body.sampleType.includes('human') ? 'human' : (req.body.sampleType && req.body.sampleType.includes('non_animal') ? 'non_animal' : '')),
       detectedLabel: req.body.detectedLabel || '',
+      clientFingerprint,
     };
 
     const aiResult = await analyzeAnimalImage(fileBuffer, originalName, options);

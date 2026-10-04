@@ -1552,11 +1552,18 @@ export default function AuthorityDashboard() {
                         <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#ef4444', marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
                           <AlertTriangle size={14} /> BEFORE: Citizen Incident / Hazard
                         </div>
-                        <img
-                          src={act.beforeImageUrl || act.reportId?.imageUrl || '/uploads/sample-dog.jpg'}
-                          alt="Before"
-                          style={{ width: '100%', height: '180px', objectFit: 'cover', borderRadius: '8px', border: '1px solid #e2e8f0' }}
-                        />
+                        {(act.beforeImageUrl || act.reportId?.imageUrl) ? (
+                          <img
+                            src={act.beforeImageUrl || act.reportId?.imageUrl}
+                            alt="Before"
+                            style={{ width: '100%', height: '180px', objectFit: 'cover', borderRadius: '8px', border: '1px solid #e2e8f0' }}
+                          />
+                        ) : (
+                          <div style={{ width: '100%', height: '180px', background: '#f8fafc', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', borderRadius: '8px', border: '1px dashed #cbd5e1', color: '#94a3b8', fontSize: '0.75rem', gap: '4px' }}>
+                            <AlertTriangle size={20} color="#f87171" />
+                            <span>No hazard photo on report</span>
+                          </div>
+                        )}
                         <div style={{ fontSize: '0.7rem', color: '#64748b', marginTop: '4px' }}>
                           Citizen Reported Hazard: {act.possibleCause || 'Poor road lighting & speed'}
                         </div>
@@ -1567,11 +1574,18 @@ export default function AuthorityDashboard() {
                         <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#10b981', marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
                           <CheckCircle2 size={14} /> AFTER: Authority Resolution Photo Proof
                         </div>
-                        <img
-                          src={act.solvedImageUrl || '/uploads/solved-lighting.jpg'}
-                          alt="After"
-                          style={{ width: '100%', height: '180px', objectFit: 'cover', borderRadius: '8px', border: '1px solid #e2e8f0' }}
-                        />
+                        {act.solvedImageUrl ? (
+                          <img
+                            src={act.solvedImageUrl}
+                            alt="After"
+                            style={{ width: '100%', height: '180px', objectFit: 'cover', borderRadius: '8px', border: '1px solid #e2e8f0' }}
+                          />
+                        ) : (
+                          <div style={{ width: '100%', height: '180px', background: '#f8fafc', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', borderRadius: '8px', border: '1px dashed #cbd5e1', color: '#94a3b8', fontSize: '0.75rem', gap: '4px' }}>
+                            <Camera size={20} color="#10b981" />
+                            <span>Resolution proof pending</span>
+                          </div>
+                        )}
                         <div style={{ fontSize: '0.7rem', color: '#16a34a', fontWeight: 700, marginTop: '4px' }}>
                           ✓ Solved Notes: {act.solvedNotes || 'Remediation completed and verified.'}
                         </div>
@@ -1992,35 +2006,6 @@ export default function AuthorityDashboard() {
                     onChange={handleSolvedImageUpload}
                     style={{ width: '100%', fontSize: '0.75rem', marginBottom: '6px' }}
                   />
-
-                  <div style={{ display: 'flex', gap: '0.35rem', flexWrap: 'wrap' }}>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setSolvedImageUrl('/uploads/solved-lighting.jpg');
-                        setSolvedLatitude(actionToComplete.reportId?.latitude || 8.7138);
-                        setSolvedLongitude(actionToComplete.reportId?.longitude || 77.7568);
-                        setSolvedGpsAccuracy(12);
-                        setSolvedAddress(actionToComplete.targetArea || 'South Bypass Highway');
-                      }}
-                      style={{ fontSize: '0.675rem', padding: '2px 8px', borderRadius: '4px', background: '#ffffff', border: '1px solid #86efac', cursor: 'pointer', color: '#166534', fontWeight: 600 }}
-                    >
-                      Preset: Solar Lighting Proof
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setSolvedImageUrl('/uploads/solved-speedbreaker.jpg');
-                        setSolvedLatitude(actionToComplete.reportId?.latitude || 8.7138);
-                        setSolvedLongitude(actionToComplete.reportId?.longitude || 77.7568);
-                        setSolvedGpsAccuracy(10);
-                        setSolvedAddress(actionToComplete.targetArea || 'South Bypass Highway');
-                      }}
-                      style={{ fontSize: '0.675rem', padding: '2px 8px', borderRadius: '4px', background: '#ffffff', border: '1px solid #86efac', cursor: 'pointer', color: '#166534', fontWeight: 600 }}
-                    >
-                      Preset: Speed Breaker Proof
-                    </button>
-                  </div>
                 </div>
 
                 {/* 3. LIVE GPS GEOTAG STATUS */}
@@ -2122,11 +2107,18 @@ export default function AuthorityDashboard() {
                   <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#ef4444', marginBottom: '4px' }}>
                     BEFORE (Accident Incident)
                   </div>
-                  <img
-                    src={inspectedAction.beforeImageUrl || inspectedAction.reportId?.imageUrl || '/uploads/sample-dog.jpg'}
-                    alt="Before"
-                    style={{ width: '100%', height: '160px', objectFit: 'cover', borderRadius: '6px' }}
-                  />
+                  {(inspectedAction.beforeImageUrl || inspectedAction.reportId?.imageUrl) ? (
+                    <img
+                      src={inspectedAction.beforeImageUrl || inspectedAction.reportId?.imageUrl}
+                      alt="Before"
+                      style={{ width: '100%', height: '160px', objectFit: 'cover', borderRadius: '6px' }}
+                    />
+                  ) : (
+                    <div style={{ width: '100%', height: '160px', background: '#f1f5f9', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', borderRadius: '6px', color: '#94a3b8', fontSize: '0.75rem', gap: '4px', border: '1px dashed #cbd5e1' }}>
+                      <AlertTriangle size={20} color="#f87171" />
+                      <span>No original incident photo</span>
+                    </div>
+                  )}
                   <div style={{ fontSize: '0.7rem', color: '#64748b', marginTop: '4px' }}>
                     Cause: {inspectedAction.possibleCause || 'Hazard'}
                   </div>
@@ -2136,11 +2128,18 @@ export default function AuthorityDashboard() {
                   <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#16a34a', marginBottom: '4px' }}>
                     AFTER (Authority Solved Proof)
                   </div>
-                  <img
-                    src={inspectedAction.solvedImageUrl || '/uploads/solved-lighting.jpg'}
-                    alt="After"
-                    style={{ width: '100%', height: '160px', objectFit: 'cover', borderRadius: '6px' }}
-                  />
+                  {inspectedAction.solvedImageUrl ? (
+                    <img
+                      src={inspectedAction.solvedImageUrl}
+                      alt="After"
+                      style={{ width: '100%', height: '160px', objectFit: 'cover', borderRadius: '6px' }}
+                    />
+                  ) : (
+                    <div style={{ width: '100%', height: '160px', background: '#f8fafc', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', borderRadius: '6px', color: '#94a3b8', fontSize: '0.75rem', gap: '4px', border: '1px dashed #cbd5e1' }}>
+                      <Camera size={20} color="#10b981" />
+                      <span>Resolution proof pending</span>
+                    </div>
+                  )}
                   <div style={{ fontSize: '0.7rem', color: '#16a34a', fontWeight: 700, marginTop: '4px' }}>
                     {inspectedAction.solvedNotes || 'Work verified on site.'}
                   </div>

@@ -237,6 +237,8 @@ const createAuthorityAction = async (req, res, next) => {
       }
     }
 
+    const isCompleted = (req.body.status && req.body.status.toUpperCase() === 'COMPLETED') || Boolean(solvedImageUrl);
+
     const action = await AuthorityAction.create({
       hotspotId: hotspotId || null,
       reportId: reportId || null,
@@ -259,8 +261,9 @@ const createAuthorityAction = async (req, res, next) => {
       solvedGpsAccuracy: solvedGpsAccuracy ? parseFloat(solvedGpsAccuracy) : null,
       solvedAddress: solvedAddress || '',
       solvedNotes,
-      status: 'PENDING',
-      isDemo: isDemoUser,
+      status: isCompleted ? 'COMPLETED' : 'PENDING',
+      completedDate: isCompleted ? new Date() : undefined,
+      isDemo: false,
     });
 
     // If linked to hotspot, push action ID
@@ -273,8 +276,9 @@ const createAuthorityAction = async (req, res, next) => {
     // If linked to report, update report remediation status and reference
     if (reportId) {
       await AccidentReport.findByIdAndUpdate(reportId, {
-        remediationStatus: 'PENDING',
+        remediationStatus: isCompleted ? 'COMPLETED' : 'PENDING',
         remediationActionId: action._id,
+        ...(isCompleted ? { status: 'RESOLVED' } : {}),
       });
     }
 

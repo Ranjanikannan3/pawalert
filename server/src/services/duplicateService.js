@@ -7,10 +7,10 @@ const { findVisualDuplicateAnimalReport, computeImageFingerprint } = require('./
  * Check if a similar accident report was recently submitted nearby or has matching animal photos
  */
 async function checkForDuplicateReport(latitude, longitude, animalType, isDemo = false, imageOptions = {}) {
-  const { fileBuffer = null, originalFilename = '', imageUrl = '' } = imageOptions;
+  const { fileBuffer = null, originalFilename = '', imageUrl = '', clientFingerprint = null } = imageOptions;
 
   // 1. TIER 1: Check for visual duplicate animal images via AI
-  if (fileBuffer || originalFilename || imageUrl) {
+  if (fileBuffer || originalFilename || imageUrl || clientFingerprint) {
     try {
       const visualCheck = await findVisualDuplicateAnimalReport({
         fileBuffer,
@@ -20,6 +20,7 @@ async function checkForDuplicateReport(latitude, longitude, animalType, isDemo =
         longitude,
         animalType,
         isDemo,
+        clientFingerprint,
         maxAgeHours: null,
       });
 

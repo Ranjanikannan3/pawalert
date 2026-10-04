@@ -65,6 +65,77 @@ function loadImageElement(src) {
   });
 }
 
+/**
+ * Computes client-side perceptual and cryptographic fingerprint:
+ * 1. 9x8 dHash (difference hash, 64 bits)
+ * 2. 8x8 aHash (average hash, 64 bits)
+ * 3. SHA-256 via Web Crypto API (if File available)
+ */
+async function generateClientFingerprint(imgSrcOrUrl, fileObj = null) {
+  const fp = {
+    sha256: '',
+    dHash: '',
+    aHash: '',
+    originalFilename: fileObj?.name ? fileObj.name.trim().toLowerCase() : '',
+  };
+
+  try {
+    if (fileObj && window.crypto && window.crypto.subtle) {
+      const arrayBuffer = await fileObj.arrayBuffer();
+      const hashBuffer = await window.crypto.subtle.digest('SHA-256', arrayBuffer);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      fp.sha256 = hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
+    }
+  } catch (e) {}
+
+  try {
+    const img = await loadImageElement(imgSrcOrUrl);
+
+    // Compute 9x8 dHash
+    const dCanvas = document.createElement('canvas');
+    dCanvas.width = 9;
+    dCanvas.height = 8;
+    const dCtx = dCanvas.getContext('2d', { willReadFrequently: true });
+    dCtx.drawImage(img, 0, 0, 9, 8);
+    const dData = dCtx.getImageData(0, 0, 9, 8).data;
+
+    let dHashBits = '';
+    for (let y = 0; y < 8; y++) {
+      for (let x = 0; x < 8; x++) {
+        const leftIdx = (y * 9 + x) * 4;
+        const rightIdx = (y * 9 + (x + 1)) * 4;
+        const leftLum = 0.299 * dData[leftIdx] + 0.587 * dData[leftIdx + 1] + 0.114 * dData[leftIdx + 2];
+        const rightLum = 0.299 * dData[rightIdx] + 0.587 * dData[rightIdx + 1] + 0.114 * dData[rightIdx + 2];
+        dHashBits += leftLum >= rightLum ? '1' : '0';
+      }
+    }
+    fp.dHash = dHashBits;
+
+    // Compute 8x8 aHash
+    const aCanvas = document.createElement('canvas');
+    aCanvas.width = 8;
+    aCanvas.height = 8;
+    const aCtx = aCanvas.getContext('2d', { willReadFrequently: true });
+    aCtx.drawImage(img, 0, 0, 8, 8);
+    const aData = aCtx.getImageData(0, 0, 8, 8).data;
+
+    let lumSum = 0;
+    const lums = [];
+    for (let i = 0; i < 64; i++) {
+      const idx = i * 4;
+      const lum = 0.299 * aData[idx] + 0.587 * aData[idx + 1] + 0.114 * aData[idx + 2];
+      lums.push(lum);
+      lumSum += lum;
+    }
+    const avgLum = lumSum / 64;
+    fp.aHash = lums.map((l) => (l >= avgLum ? '1' : '0')).join('');
+  } catch (e) {
+    console.warn('Canvas fingerprint extraction notice:', e);
+  }
+
+  return fp;
+}
+
 async function getBlazeFaceModel() {
   if (cachedBlazeFaceModel) return cachedBlazeFaceModel;
   if (typeof window === 'undefined' || !window.blazeface) return null;
@@ -414,7 +485,7 @@ async function classifyImageContent(imageSrcOrUrl, filenameOrType = '') {
   return { isAnimal: true, animal: 'Dog' };
 }
 
-export default function AiClassifierModal({ onAnalysisComplete, selectedImage, setSelectedImage }) {
+export default function AiClassifierModal({ onAnalysisComplete, selectedImage, setSelectedImage, onViewExistingCase }) {
   const [analyzing, setAnalyzing] = useState(false);
   const [imagePreview, setImagePreview] = useState(selectedImage || null);
   const [aiResult, setAiResult] = useState(null);
@@ -560,12 +631,21 @@ export default function AiClassifierModal({ onAnalysisComplete, selectedImage, s
       clientCheck = await classifyImageContent(previewUrl, sampleTypeOrFilename || fileObj?.name || '');
     } catch (e) {}
 
+    // 2. Generate client-side perceptual fingerprint (dHash, aHash, sha256) for robust duplicate matching
+    let clientFp = null;
+    try {
+      clientFp = await generateClientFingerprint(previewUrl, fileObj);
+    } catch (e) {}
+
     try {
       let res;
       if (fileObj) {
         const formData = new FormData();
         formData.append('image', fileObj);
         formData.append('isAnimal', clientCheck.isAnimal ? 'true' : 'false');
+        if (clientFp) {
+          formData.append('clientFingerprint', JSON.stringify(clientFp));
+        }
         if (clientCheck.isHuman) {
           formData.append('isHuman', 'true');
           formData.append('detectedType', 'human');
@@ -582,6 +662,7 @@ export default function AiClassifierModal({ onAnalysisComplete, selectedImage, s
           isHuman: Boolean(clientCheck.isHuman),
           detectedType: clientCheck.isHuman ? 'human' : (!clientCheck.isAnimal ? 'non_animal' : undefined),
           detectedLabel: clientCheck.detectedLabel,
+          clientFingerprint: clientFp ? JSON.stringify(clientFp) : undefined,
         });
       }
 
@@ -622,7 +703,9 @@ export default function AiClassifierModal({ onAnalysisComplete, selectedImage, s
             imageUrl: previewUrl,
             breakdown: res.breakdown,
             rawFile: fileObj,
+            clientFingerprint: clientFp,
             duplicateAnalysis: res.duplicateAnalysis || null,
+            matchingReport: res.duplicateAnalysis?.matchingReport || res.matchingReport || null,
           });
         } else if (onAnalysisComplete) {
           onAnalysisComplete({
@@ -633,6 +716,7 @@ export default function AiClassifierModal({ onAnalysisComplete, selectedImage, s
             confidence: res.confidence || 0.95,
             imageUrl: previewUrl,
             rawFile: fileObj,
+            clientFingerprint: clientFp,
             message: res.message || '⚠️ Invalid Image Detected: Not an Animal.',
             status: 'INCORRECT_IMAGE_DETECTED',
           });
@@ -834,6 +918,100 @@ export default function AiClassifierModal({ onAnalysisComplete, selectedImage, s
       );
     }
 
+    const isDuplicate = Boolean(aiResult.isDuplicate || aiResult.duplicateAnalysis?.isDuplicate);
+    const matchingRep = aiResult.duplicateAnalysis?.matchingReport || aiResult.matchingReport;
+    const dupReportId = matchingRep?.reportId || aiResult.duplicateReportId || 'Previous Report';
+
+    if (isDuplicate) {
+      return (
+        <div
+          id="duplicate-image-detected-msg"
+          style={{
+            padding: '0.85rem 1.15rem',
+            background: 'linear-gradient(135deg, #fffbeb, #fef3c7)',
+            borderTop: '3px solid #f59e0b',
+            textAlign: 'left',
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: '0.75rem',
+              flexWrap: 'wrap',
+              marginBottom: '0.35rem',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#b45309', fontWeight: 900, fontSize: '0.95rem' }}>
+              <AlertTriangle size={19} color="#d97706" />
+              <span>⚠️ Duplicate Animal Report Detected!</span>
+            </div>
+            <span
+              style={{
+                background: '#d97706',
+                color: '#ffffff',
+                fontSize: '0.725rem',
+                fontWeight: 800,
+                padding: '3px 9px',
+                borderRadius: '999px',
+                textTransform: 'uppercase',
+                letterSpacing: '0.04em',
+                boxShadow: '0 2px 6px rgba(217,119,6,0.25)',
+              }}
+            >
+              DUPLICATE ({Math.round((aiResult.duplicateAnalysis?.similarityScore || 1) * 100)}% Match)
+            </span>
+          </div>
+
+          <p style={{ margin: '0 0 0.55rem 0', fontSize: '0.825rem', color: '#92400e', lineHeight: 1.45, fontWeight: 700 }}>
+            {aiResult.duplicateReason || aiResult.duplicateAnalysis?.reason || `This photo matches existing report ${dupReportId}. Submitting will link this photo to the active rescue case rather than creating duplicate alerts.`}
+          </p>
+
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              flexWrap: 'wrap',
+              gap: '0.5rem',
+              paddingTop: '0.45rem',
+              borderTop: '1px dashed #fde68a',
+            }}
+          >
+            <span style={{ fontSize: '0.75rem', color: '#78350f', fontWeight: 700 }}>
+              🔗 <strong>Matched Case:</strong> {dupReportId} {matchingRep?.address ? `(${matchingRep.address})` : ''}
+            </span>
+            {onViewExistingCase && matchingRep && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onViewExistingCase(matchingRep);
+                }}
+                style={{
+                  background: '#d97706',
+                  color: '#ffffff',
+                  border: 'none',
+                  borderRadius: '6px',
+                  padding: '4px 10px',
+                  fontSize: '0.75rem',
+                  fontWeight: 800,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  boxShadow: '0 2px 6px rgba(217,119,6,0.25)',
+                }}
+              >
+                🔍 View Existing Case ({dupReportId})
+              </button>
+            )}
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div
         style={{
@@ -989,9 +1167,17 @@ export default function AiClassifierModal({ onAnalysisComplete, selectedImage, s
               style={{
                 borderRadius: '14px',
                 overflow: 'hidden',
-                border: aiResult?.isAnimal === false ? '3px solid #ef4444' : '2px solid #0d9488',
+                border: aiResult?.isAnimal === false
+                  ? '3px solid #ef4444'
+                  : (aiResult?.isDuplicate || aiResult?.duplicateAnalysis?.isDuplicate)
+                  ? '3px solid #f59e0b'
+                  : '2px solid #0d9488',
                 background: '#ffffff',
-                boxShadow: aiResult?.isAnimal === false ? '0 4px 16px rgba(239,68,68,0.2)' : '0 4px 14px rgba(0,0,0,0.06)',
+                boxShadow: aiResult?.isAnimal === false
+                  ? '0 4px 16px rgba(239,68,68,0.2)'
+                  : (aiResult?.isDuplicate || aiResult?.duplicateAnalysis?.isDuplicate)
+                  ? '0 4px 16px rgba(245,158,11,0.25)'
+                  : '0 4px 14px rgba(0,0,0,0.06)',
               }}
             >
               <div style={{ position: 'relative', width: '100%', height: '260px', overflow: 'hidden' }}>
@@ -1006,7 +1192,11 @@ export default function AiClassifierModal({ onAnalysisComplete, selectedImage, s
                     position: 'absolute',
                     top: '10px',
                     left: '10px',
-                    background: aiResult?.isAnimal === false ? 'rgba(220, 38, 38, 0.95)' : 'rgba(13, 148, 136, 0.9)',
+                    background: aiResult?.isAnimal === false
+                      ? 'rgba(220, 38, 38, 0.95)'
+                      : (aiResult?.isDuplicate || aiResult?.duplicateAnalysis?.isDuplicate)
+                      ? 'rgba(217, 119, 6, 0.95)'
+                      : 'rgba(13, 148, 136, 0.9)',
                     color: '#ffffff',
                     padding: '0.35rem 0.75rem',
                     borderRadius: '6px',
@@ -1019,8 +1209,22 @@ export default function AiClassifierModal({ onAnalysisComplete, selectedImage, s
                     boxShadow: '0 2px 8px rgba(0,0,0,0.25)',
                   }}
                 >
-                  {aiResult?.isAnimal === false ? <XCircle size={15} /> : <CheckCircle2 size={14} />}
-                  <span>{aiResult?.isAnimal === false ? '⚠️ INVALID IMAGE DETECTED' : 'Live Snapshot Captured'}</span>
+                  {aiResult?.isAnimal === false ? (
+                    <>
+                      <XCircle size={15} />
+                      <span>⚠️ INVALID IMAGE DETECTED</span>
+                    </>
+                  ) : (aiResult?.isDuplicate || aiResult?.duplicateAnalysis?.isDuplicate) ? (
+                    <>
+                      <AlertTriangle size={15} />
+                      <span>⚠️ DUPLICATE ANIMAL PHOTO DETECTED</span>
+                    </>
+                  ) : (
+                    <>
+                      <CheckCircle2 size={14} />
+                      <span>Live Snapshot Captured</span>
+                    </>
+                  )}
                 </div>
 
                 <div
@@ -1254,9 +1458,17 @@ export default function AiClassifierModal({ onAnalysisComplete, selectedImage, s
               style={{
                 borderRadius: '14px',
                 overflow: 'hidden',
-                border: aiResult?.isAnimal === false ? '3px solid #ef4444' : '2px solid #0d9488',
+                border: aiResult?.isAnimal === false
+                  ? '3px solid #ef4444'
+                  : (aiResult?.isDuplicate || aiResult?.duplicateAnalysis?.isDuplicate)
+                  ? '3px solid #f59e0b'
+                  : '2px solid #0d9488',
                 background: '#ffffff',
-                boxShadow: aiResult?.isAnimal === false ? '0 4px 16px rgba(239,68,68,0.2)' : '0 4px 14px rgba(0,0,0,0.06)',
+                boxShadow: aiResult?.isAnimal === false
+                  ? '0 4px 16px rgba(239,68,68,0.2)'
+                  : (aiResult?.isDuplicate || aiResult?.duplicateAnalysis?.isDuplicate)
+                  ? '0 4px 16px rgba(245,158,11,0.25)'
+                  : '0 4px 14px rgba(0,0,0,0.06)',
               }}
             >
               <div
@@ -1289,6 +1501,28 @@ export default function AiClassifierModal({ onAnalysisComplete, selectedImage, s
                     }}
                   >
                     <XCircle size={15} /> ⚠️ INVALID IMAGE DETECTED
+                  </div>
+                )}
+                {(aiResult?.isDuplicate || aiResult?.duplicateAnalysis?.isDuplicate) && aiResult?.isAnimal !== false && (
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: '10px',
+                      left: '10px',
+                      background: 'rgba(217, 119, 6, 0.95)',
+                      color: '#ffffff',
+                      padding: '0.35rem 0.75rem',
+                      borderRadius: '6px',
+                      fontSize: '0.75rem',
+                      fontWeight: 800,
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      backdropFilter: 'blur(4px)',
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
+                    }}
+                  >
+                    <AlertTriangle size={15} /> ⚠️ DUPLICATE ANIMAL PHOTO DETECTED
                   </div>
                 )}
                 <div
@@ -1392,10 +1626,18 @@ export default function AiClassifierModal({ onAnalysisComplete, selectedImage, s
               style={{
                 borderRadius: '12px',
                 overflow: 'hidden',
-                border: aiResult?.isAnimal === false ? '3px solid #ef4444' : '2px solid #cbd5e1',
+                border: aiResult?.isAnimal === false
+                  ? '3px solid #ef4444'
+                  : (aiResult?.isDuplicate || aiResult?.duplicateAnalysis?.isDuplicate)
+                  ? '3px solid #f59e0b'
+                  : '2px solid #cbd5e1',
                 background: '#ffffff',
                 marginTop: '0.75rem',
-                boxShadow: aiResult?.isAnimal === false ? '0 4px 16px rgba(239,68,68,0.2)' : 'none',
+                boxShadow: aiResult?.isAnimal === false
+                  ? '0 4px 16px rgba(239,68,68,0.2)'
+                  : (aiResult?.isDuplicate || aiResult?.duplicateAnalysis?.isDuplicate)
+                  ? '0 4px 16px rgba(245,158,11,0.25)'
+                  : 'none',
               }}
             >
               <div style={{ position: 'relative', width: '100%', height: '200px', overflow: 'hidden' }}>
@@ -1421,6 +1663,28 @@ export default function AiClassifierModal({ onAnalysisComplete, selectedImage, s
                     }}
                   >
                     <XCircle size={15} /> ⚠️ INVALID IMAGE DETECTED
+                  </div>
+                )}
+                {(aiResult?.isDuplicate || aiResult?.duplicateAnalysis?.isDuplicate) && aiResult?.isAnimal !== false && (
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: '10px',
+                      left: '10px',
+                      background: 'rgba(217, 119, 6, 0.95)',
+                      color: '#ffffff',
+                      padding: '0.35rem 0.75rem',
+                      borderRadius: '6px',
+                      fontSize: '0.75rem',
+                      fontWeight: 800,
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      backdropFilter: 'blur(4px)',
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
+                    }}
+                  >
+                    <AlertTriangle size={15} /> ⚠️ DUPLICATE ANIMAL PHOTO DETECTED
                   </div>
                 )}
               </div>
