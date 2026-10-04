@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
+import 'leaflet/dist/leaflet.css';
 import {
   MapContainer,
   TileLayer,
@@ -109,12 +110,30 @@ function LocationPickerHandler({ onLocationSelect }) {
   return null;
 }
 
-// Component to re-center map dynamically
+// Component to re-center map dynamically and invalidate container dimensions
 function RecenterController({ center, zoom }) {
   const map = useMap();
+
+  useEffect(() => {
+    // Invalidate map size on initial mount and staggered timeouts (essential for tab switching & flex containers)
+    map.invalidateSize();
+    const t1 = setTimeout(() => map.invalidateSize(), 150);
+    const t2 = setTimeout(() => map.invalidateSize(), 400);
+    const t3 = setTimeout(() => map.invalidateSize(), 900);
+    const handleResize = () => map.invalidateSize();
+    window.addEventListener('resize', handleResize);
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(t3);
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [map]);
+
   useEffect(() => {
     if (center && center[0] && center[1]) {
       map.setView(center, zoom || map.getZoom());
+      map.invalidateSize();
     }
   }, [center, zoom, map]);
   return null;
@@ -152,8 +171,8 @@ export default function GisMap({
   };
 
   const tileLayerUrls = {
-    streets: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-    dark: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
+    streets: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
+    dark: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
     satellite: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
   };
 

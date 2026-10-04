@@ -605,12 +605,16 @@ export default function AiClassifierModal({ onAnalysisComplete, selectedImage, s
       return;
     }
 
-    const previewUrl = URL.createObjectURL(file);
-    setImagePreview(previewUrl);
-    setError(null);
-    setManualOverride(null);
-    stopCamera();
-    runAnalysis(file, previewUrl, file.name);
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const dataUrl = event.target.result;
+      setImagePreview(dataUrl);
+      setError(null);
+      setManualOverride(null);
+      stopCamera();
+      runAnalysis(file, dataUrl, file.name);
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleSelectSample = (sample) => {

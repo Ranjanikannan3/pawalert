@@ -143,7 +143,7 @@ export default function CitizenDashboard() {
     aiConfidence: 0.96,
     aiCorrected: false,
     userCorrectedAnimal: '',
-    imageUrl: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=600&auto=format&fit=crop&q=80',
+    imageUrl: '',
     rawFile: null,
     latitude: 8.7138,
     longitude: 77.7568,

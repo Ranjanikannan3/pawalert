@@ -371,17 +371,54 @@ export default function AuthorityDashboard() {
     }
   };
 
-  const handleOpenCompleteModal = (action) => {
-    setActionToComplete(action);
-    setBeforeImageUrl(action.beforeImageUrl || action.reportId?.imageUrl || '');
+  const handleOpenCompleteModal = (target = null) => {
+    let actionObj = target;
+    if (!target) {
+      if (reports.length > 0) {
+        actionObj = reports[0];
+      } else {
+        actionObj = {
+          isNewFromReport: true,
+          actionType: 'Remediate Animal Accident Hazard',
+          problem: 'Road safety hazard and stray animal protection',
+          possibleCause: 'Poor street lighting',
+          assignedDepartment: 'Municipal Road Safety & Infrastructure',
+          targetArea: 'Municipal road sector',
+          status: 'PENDING',
+        };
+      }
+    }
+
+    const isReport = Boolean(actionObj.reportId && !actionObj.actionType);
+    if (isReport) {
+      const existingAction = actions.find((a) => (a.reportId?._id || a.reportId) === actionObj._id);
+      if (existingAction) {
+        actionObj = existingAction;
+      } else {
+        actionObj = {
+          isNewFromReport: true,
+          reportId: actionObj,
+          actionType: `Remediate ${actionObj.animalType || 'Animal'} Accident Hazard`,
+          problem: actionObj.description || `Animal accident hazard at ${actionObj.address || 'location'}`,
+          possibleCause: (actionObj.possibleCauses && actionObj.possibleCauses[0]) || actionObj.rootCause || 'Poor street lighting',
+          assignedDepartment: 'Municipal Road Safety & Infrastructure',
+          targetArea: actionObj.address || 'Municipal road sector',
+          beforeImageUrl: actionObj.imageUrl || '',
+          status: 'PENDING',
+        };
+      }
+    }
+
+    setActionToComplete(actionObj);
+    setBeforeImageUrl(actionObj.beforeImageUrl || actionObj.reportId?.imageUrl || '');
     setBeforeImageFile(null);
     setSolvedImageFile(null);
-    setSolvedImageUrl('');
-    setSolvedLatitude(action.reportId?.latitude || null);
-    setSolvedLongitude(action.reportId?.longitude || null);
-    setSolvedGpsAccuracy(null);
-    setSolvedAddress(action.targetArea || action.reportId?.address || '');
-    setSolvedNotes('');
+    setSolvedImageUrl(actionObj.solvedImageUrl || '');
+    setSolvedLatitude(actionObj.solvedLatitude || actionObj.reportId?.latitude || 8.7138);
+    setSolvedLongitude(actionObj.solvedLongitude || actionObj.reportId?.longitude || 77.7568);
+    setSolvedGpsAccuracy(actionObj.solvedGpsAccuracy || 10);
+    setSolvedAddress(actionObj.solvedAddress || actionObj.targetArea || actionObj.reportId?.address || 'Municipal road sector');
+    setSolvedNotes(actionObj.solvedNotes || '');
     setShowCompleteModal(true);
   };
 
@@ -437,22 +474,61 @@ export default function AuthorityDashboard() {
 
     setCompletingAction(true);
     try {
-      const payload = {
-        status: 'COMPLETED',
-        solvedImageUrl: solvedImageUrl,
-        beforeImageUrl: beforeImageUrl || actionToComplete.beforeImageUrl || actionToComplete.reportId?.imageUrl || '',
-        solvedLatitude: solvedLatitude || actionToComplete.reportId?.latitude,
-        solvedLongitude: solvedLongitude || actionToComplete.reportId?.longitude,
-        solvedGpsAccuracy: solvedGpsAccuracy,
-        solvedAddress: solvedAddress || actionToComplete.targetArea || '',
-        solvedNotes: solvedNotes || 'Remediation completed and verified on-site with live GPS geotag.',
-      };
+      if (actionToComplete.isNewFromReport) {
+        const reportTarget = actionToComplete.reportId;
+        if (solvedImageFile) {
+          const payload = new FormData();
+          if (reportTarget) payload.append('reportId', reportTarget._id || reportTarget);
+          payload.append('actionType', actionToComplete.actionType || 'Remediate Accident Zone');
+          payload.append('problem', actionToComplete.problem || 'Animal accident hazard');
+          payload.append('possibleCause', actionToComplete.possibleCause || 'Poor street lighting');
+          payload.append('assignedDepartment', actionToComplete.assignedDepartment || 'Municipal Infrastructure & Safety');
+          payload.append('targetArea', solvedAddress || reportTarget?.address || 'Municipal Road Sector');
+          payload.append('status', 'COMPLETED');
+          payload.append('image', solvedImageFile);
+          if (beforeImageUrl) payload.append('beforeImageUrl', beforeImageUrl);
+          payload.append('solvedNotes', solvedNotes || 'Remediation completed and verified on-site with live GPS geotag.');
+          if (solvedLatitude) payload.append('solvedLatitude', solvedLatitude);
+          if (solvedLongitude) payload.append('solvedLongitude', solvedLongitude);
+          if (solvedGpsAccuracy) payload.append('solvedGpsAccuracy', solvedGpsAccuracy);
+          payload.append('solvedAddress', solvedAddress || reportTarget?.address || 'Municipal road sector');
+          await api.createAuthorityAction(payload);
+        } else {
+          await api.createAuthorityAction({
+            reportId: reportTarget ? (reportTarget._id || reportTarget) : undefined,
+            actionType: actionToComplete.actionType || 'Remediate Accident Zone',
+            problem: actionToComplete.problem || 'Animal accident hazard',
+            possibleCause: actionToComplete.possibleCause || 'Poor street lighting',
+            assignedDepartment: actionToComplete.assignedDepartment || 'Municipal Infrastructure & Safety',
+            targetArea: solvedAddress || reportTarget?.address || 'Municipal Road Sector',
+            status: 'COMPLETED',
+            solvedImageUrl: solvedImageUrl,
+            beforeImageUrl: beforeImageUrl,
+            solvedNotes: solvedNotes || 'Remediation completed and verified on-site with live GPS geotag.',
+            solvedLatitude: solvedLatitude,
+            solvedLongitude: solvedLongitude,
+            solvedGpsAccuracy: solvedGpsAccuracy,
+            solvedAddress: solvedAddress || reportTarget?.address || 'Municipal road sector',
+          });
+        }
+      } else {
+        const payload = {
+          status: 'COMPLETED',
+          solvedImageUrl: solvedImageUrl,
+          beforeImageUrl: beforeImageUrl || actionToComplete.beforeImageUrl || actionToComplete.reportId?.imageUrl || '',
+          solvedLatitude: solvedLatitude || actionToComplete.reportId?.latitude,
+          solvedLongitude: solvedLongitude || actionToComplete.reportId?.longitude,
+          solvedGpsAccuracy: solvedGpsAccuracy,
+          solvedAddress: solvedAddress || actionToComplete.targetArea || '',
+          solvedNotes: solvedNotes || 'Remediation completed and verified on-site with live GPS geotag.',
+        };
+        await api.updateAuthorityAction(actionToComplete._id, payload);
+      }
 
-      await api.updateAuthorityAction(actionToComplete._id, payload);
       setShowCompleteModal(false);
       setActionToComplete(null);
       loadAllData();
-      alert('✓ Authority action marked COMPLETED with verified camera resolution proof and live GPS coordinates!');
+      alert('✓ Authority action marked COMPLETED with verified resolution proof and live GPS coordinates!');
     } catch (err) {
       alert(err.message || 'Failed to mark action completed.');
     } finally {
@@ -1390,13 +1466,22 @@ export default function AuthorityDashboard() {
                 )}
               </div>
 
-              <button
-                onClick={() => handleOpenCreateActionModal(null, r)}
-                className="btn btn-sm btn-secondary"
-                style={{ marginTop: '0.75rem', color: '#7c3aed', width: '100%', justifyContent: 'center' }}
-              >
-                <Plus size={13} /> Create Action for this Report
-              </button>
+              <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.75rem' }}>
+                <button
+                  onClick={() => handleOpenCompleteModal(r)}
+                  className="btn btn-sm btn-primary"
+                  style={{ background: '#10b981', flex: 1, justifyContent: 'center', fontSize: '0.725rem' }}
+                >
+                  <Camera size={12} /> Attach Proof
+                </button>
+                <button
+                  onClick={() => handleOpenCreateActionModal(null, r)}
+                  className="btn btn-sm btn-secondary"
+                  style={{ color: '#7c3aed', flex: 1, justifyContent: 'center', fontSize: '0.725rem' }}
+                >
+                  <Plus size={12} /> Plan Action
+                </button>
+              </div>
             </div>
           );
 
@@ -1513,12 +1598,24 @@ export default function AuthorityDashboard() {
         {/* ================= SECTION 7: BEFORE / AFTER PROOFS (Section 18) ================= */}
         {activeSection === 'resolved-proof' && (
           <div className="card" style={{ padding: '1.5rem', borderRadius: '16px' }}>
-            <h2 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#0f172a', marginBottom: '0.25rem' }}>
-              🛡️ Resolution Photo Proof Gallery (Before & After)
-            </h2>
-            <p style={{ fontSize: '0.8rem', color: '#64748b', marginBottom: '1.25rem' }}>
-              Mandatory photographic evidence uploaded by municipal safety authorities proving completed infrastructure fixes.
-            </p>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '0.75rem' }}>
+              <div>
+                <h2 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#0f172a', marginBottom: '0.25rem' }}>
+                  🛡️ Resolution Photo Proof Gallery (Before & After)
+                </h2>
+                <p style={{ fontSize: '0.8rem', color: '#64748b', margin: 0 }}>
+                  Mandatory photographic evidence uploaded by municipal safety authorities proving completed infrastructure fixes.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => handleOpenCompleteModal()}
+                className="btn btn-primary"
+                style={{ background: '#10b981', display: 'flex', alignItems: 'center', gap: '0.4rem', fontWeight: 800 }}
+              >
+                <Camera size={16} /> 📸 Attach Resolution Proof
+              </button>
+            </div>
 
             {completedActions.length === 0 ? (
               <div style={{ padding: '3.5rem', textAlign: 'center', background: '#f8fafc', borderRadius: '12px' }}>
@@ -1527,6 +1624,14 @@ export default function AuthorityDashboard() {
                 <p style={{ fontSize: '0.825rem', color: '#64748b', maxWidth: '400px', margin: '0.25rem auto' }}>
                   When authorities execute actions and upload mandatory resolution photos, they will be archived here for civic auditing.
                 </p>
+                <button
+                  type="button"
+                  onClick={() => handleOpenCompleteModal()}
+                  className="btn btn-primary"
+                  style={{ background: '#10b981', marginTop: '1rem', fontWeight: 800 }}
+                >
+                  <Camera size={15} /> 📸 Attach Resolution Proof Now
+                </button>
               </div>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
@@ -1890,8 +1995,31 @@ export default function AuthorityDashboard() {
               <p style={{ fontSize: '0.8rem', color: '#64748b', marginBottom: '1.25rem' }}>
                 <strong>Mandatory Verification:</strong> Use your live device camera or file upload to capture Before (hazard) and After (solved) photo evidence along with verified GPS coordinates.
               </p>
-
               <form onSubmit={handleCompleteActionSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                {actionToComplete.isNewFromReport && reports.length > 0 && (
+                  <div>
+                    <label style={{ fontSize: '0.775rem', fontWeight: 700, color: '#334155', display: 'block', marginBottom: '0.25rem' }}>
+                      Select Citizen Incident to Resolve:
+                    </label>
+                    <select
+                      value={actionToComplete.reportId?._id || actionToComplete.reportId || ''}
+                      onChange={(e) => {
+                        const rep = reports.find((r) => r._id === e.target.value);
+                        if (rep) {
+                          handleOpenCompleteModal(rep);
+                        }
+                      }}
+                      style={{ width: '100%', padding: '0.5rem', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.8rem' }}
+                    >
+                      {reports.map((r) => (
+                        <option key={r._id} value={r._id}>
+                          {r.reportId} - {r.animalType} ({r.address || 'GPS Location'})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+
                 <div style={{ background: '#f8fafc', padding: '0.85rem', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
                   <div style={{ fontSize: '0.75rem', color: '#64748b' }}>Action Being Completed:</div>
                   <div style={{ fontSize: '0.95rem', fontWeight: 800, color: '#0f172a' }}>{actionToComplete.actionType}</div>
