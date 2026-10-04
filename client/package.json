@@ -18,12 +18,12 @@
     "react-leaflet": "^4.2.1",
     "react-router-dom": "^7.18.3",
     "recharts": "^2.12.7",
-    "socket.io-client": "^4.8.3"
+    "socket.io-client": "^4.8.3",
+    "@vitejs/plugin-react": "^4.2.1",
+    "vite": "^5.2.11"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",
-    "@types/react-dom": "^18.3.0",
-    "@vitejs/plugin-react": "^4.2.1",
-    "vite": "^5.2.11"
+    "@types/react-dom": "^18.3.0"
   }
 }

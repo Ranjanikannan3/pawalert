@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "PawAlert AI - An Intelligent Street Animal Accident Prevention and Rescue Management System",
   "scripts": {
-    "build": "npm --prefix client install && npm --prefix client run build && npm --prefix server install",
-    "render-build": "npm --prefix client install && npm --prefix client run build && npm --prefix server install",
+    "build": "npm --prefix client install --include=dev && npm --prefix client run build && npm --prefix server install",
+    "render-build": "npm --prefix client install --include=dev && npm --prefix client run build && npm --prefix server install",
     "start": "node server/src/server.js"
   }
 }
